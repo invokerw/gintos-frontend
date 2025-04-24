@@ -48,6 +48,7 @@
     "url": "https://github.com/xiaoxian521"
   },
   "dependencies": {
+    "@bufbuild/protobuf": "^2.2.5",
     "@pureadmin/descriptions": "^1.2.1",
     "@pureadmin/table": "^3.2.1",
     "@pureadmin/utils": "^2.5.0",
