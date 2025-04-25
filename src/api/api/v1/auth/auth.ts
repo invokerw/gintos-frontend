@@ -96,14 +96,14 @@ export interface LoginRequest {
 
 /** 用户后台登录 - 回应 */
 export interface LoginResponse {
-  /** 用户信息，必选项。 */
+  /** 用户信息 */
   user: User | undefined;
-  /** 访问令牌，必选项。 */
+  /** 访问令牌 */
   accessToken: string;
   /** 更新令牌，用来获取下一次的访问令牌，可选项。 */
   refreshToken: string;
-  expiresAt: number;
-  refreshExpiresAt: number;
+  expires: number;
+  refreshExpires: number;
 }
 
 /** 用户刷新令牌 - 请求 */
@@ -114,12 +114,51 @@ export interface RefreshTokenRequest {
 
 /** 用户刷新令牌 - 回应 */
 export interface RefreshTokenResponse {
+  /** 用户信息，必选项。 */
+  user: User | undefined;
   /** 访问令牌，必选项。 */
   accessToken: string;
   /** 更新令牌，用来获取下一次的访问令牌，可选项。 */
   refreshToken: string;
-  expiresAt: number;
-  refreshExpiresAt: number;
+  expires: number;
+  refreshExpires: number;
+}
+
+export interface GetAsyncRoutesResponse {
+  /** 异步路由列表 */
+  routes: RouteConfig[];
+}
+
+/** 定义路由元信息 */
+export interface RouteMeta {
+  /** 菜单名称 */
+  title: string;
+  /** 菜单图标 */
+  icon: string;
+  /** 菜单排序 */
+  rank: number;
+  /** 是否在菜单中显示 */
+  showLink: boolean;
+  /** 页面级别权限设置 */
+  roles: string[];
+  /** 按钮级别权限设置 */
+  auths: string[];
+}
+
+/** 定义路由配置表 */
+export interface RouteConfig {
+  /** 路由路径 */
+  path: string;
+  /** 路由名称（必须保持唯一） */
+  name: string;
+  /** 重定向路径 */
+  redirect: string;
+  /** 路由元信息 */
+  meta: RouteMeta | undefined;
+  /** 按需加载需要展示的页面 */
+  component: string;
+  /** 子路由配置项 */
+  children: RouteConfig[];
 }
 
 function createBaseRegisterRequest(): RegisterRequest {
@@ -383,8 +422,8 @@ function createBaseLoginResponse(): LoginResponse {
     user: undefined,
     accessToken: "",
     refreshToken: "",
-    expiresAt: 0,
-    refreshExpiresAt: 0
+    expires: 0,
+    refreshExpires: 0
   };
 }
 
@@ -402,11 +441,11 @@ export const LoginResponse: MessageFns<LoginResponse> = {
     if (message.refreshToken !== "") {
       writer.uint32(26).string(message.refreshToken);
     }
-    if (message.expiresAt !== 0) {
-      writer.uint32(32).int64(message.expiresAt);
+    if (message.expires !== 0) {
+      writer.uint32(32).int64(message.expires);
     }
-    if (message.refreshExpiresAt !== 0) {
-      writer.uint32(40).int64(message.refreshExpiresAt);
+    if (message.refreshExpires !== 0) {
+      writer.uint32(40).int64(message.refreshExpires);
     }
     return writer;
   },
@@ -448,7 +487,7 @@ export const LoginResponse: MessageFns<LoginResponse> = {
             break;
           }
 
-          message.expiresAt = longToNumber(reader.int64());
+          message.expires = longToNumber(reader.int64());
           continue;
         }
         case 5: {
@@ -456,7 +495,7 @@ export const LoginResponse: MessageFns<LoginResponse> = {
             break;
           }
 
-          message.refreshExpiresAt = longToNumber(reader.int64());
+          message.refreshExpires = longToNumber(reader.int64());
           continue;
         }
       }
@@ -477,11 +516,9 @@ export const LoginResponse: MessageFns<LoginResponse> = {
       refreshToken: isSet(object.refresh_token)
         ? globalThis.String(object.refresh_token)
         : "",
-      expiresAt: isSet(object.expires_at)
-        ? globalThis.Number(object.expires_at)
-        : 0,
-      refreshExpiresAt: isSet(object.refresh_expires_at)
-        ? globalThis.Number(object.refresh_expires_at)
+      expires: isSet(object.expires) ? globalThis.Number(object.expires) : 0,
+      refreshExpires: isSet(object.refresh_expires)
+        ? globalThis.Number(object.refresh_expires)
         : 0
     };
   },
@@ -497,11 +534,11 @@ export const LoginResponse: MessageFns<LoginResponse> = {
     if (message.refreshToken !== "") {
       obj.refresh_token = message.refreshToken;
     }
-    if (message.expiresAt !== 0) {
-      obj.expires_at = Math.round(message.expiresAt);
+    if (message.expires !== 0) {
+      obj.expires = Math.round(message.expires);
     }
-    if (message.refreshExpiresAt !== 0) {
-      obj.refresh_expires_at = Math.round(message.refreshExpiresAt);
+    if (message.refreshExpires !== 0) {
+      obj.refresh_expires = Math.round(message.refreshExpires);
     }
     return obj;
   },
@@ -521,8 +558,8 @@ export const LoginResponse: MessageFns<LoginResponse> = {
         : undefined;
     message.accessToken = object.accessToken ?? "";
     message.refreshToken = object.refreshToken ?? "";
-    message.expiresAt = object.expiresAt ?? 0;
-    message.refreshExpiresAt = object.refreshExpiresAt ?? 0;
+    message.expires = object.expires ?? 0;
+    message.refreshExpires = object.refreshExpires ?? 0;
     return message;
   }
 };
@@ -602,10 +639,11 @@ export const RefreshTokenRequest: MessageFns<RefreshTokenRequest> = {
 
 function createBaseRefreshTokenResponse(): RefreshTokenResponse {
   return {
+    user: undefined,
     accessToken: "",
     refreshToken: "",
-    expiresAt: 0,
-    refreshExpiresAt: 0
+    expires: 0,
+    refreshExpires: 0
   };
 }
 
@@ -614,17 +652,20 @@ export const RefreshTokenResponse: MessageFns<RefreshTokenResponse> = {
     message: RefreshTokenResponse,
     writer: BinaryWriter = new BinaryWriter()
   ): BinaryWriter {
+    if (message.user !== undefined) {
+      User.encode(message.user, writer.uint32(10).fork()).join();
+    }
     if (message.accessToken !== "") {
-      writer.uint32(10).string(message.accessToken);
+      writer.uint32(18).string(message.accessToken);
     }
     if (message.refreshToken !== "") {
-      writer.uint32(18).string(message.refreshToken);
+      writer.uint32(26).string(message.refreshToken);
     }
-    if (message.expiresAt !== 0) {
-      writer.uint32(24).int64(message.expiresAt);
+    if (message.expires !== 0) {
+      writer.uint32(32).int64(message.expires);
     }
-    if (message.refreshExpiresAt !== 0) {
-      writer.uint32(32).int64(message.refreshExpiresAt);
+    if (message.refreshExpires !== 0) {
+      writer.uint32(40).int64(message.refreshExpires);
     }
     return writer;
   },
@@ -645,7 +686,7 @@ export const RefreshTokenResponse: MessageFns<RefreshTokenResponse> = {
             break;
           }
 
-          message.accessToken = reader.string();
+          message.user = User.decode(reader, reader.uint32());
           continue;
         }
         case 2: {
@@ -653,15 +694,15 @@ export const RefreshTokenResponse: MessageFns<RefreshTokenResponse> = {
             break;
           }
 
-          message.refreshToken = reader.string();
+          message.accessToken = reader.string();
           continue;
         }
         case 3: {
-          if (tag !== 24) {
+          if (tag !== 26) {
             break;
           }
 
-          message.expiresAt = longToNumber(reader.int64());
+          message.refreshToken = reader.string();
           continue;
         }
         case 4: {
@@ -669,7 +710,15 @@ export const RefreshTokenResponse: MessageFns<RefreshTokenResponse> = {
             break;
           }
 
-          message.refreshExpiresAt = longToNumber(reader.int64());
+          message.expires = longToNumber(reader.int64());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.refreshExpires = longToNumber(reader.int64());
           continue;
         }
       }
@@ -683,34 +732,36 @@ export const RefreshTokenResponse: MessageFns<RefreshTokenResponse> = {
 
   fromJSON(object: any): RefreshTokenResponse {
     return {
+      user: isSet(object.user) ? User.fromJSON(object.user) : undefined,
       accessToken: isSet(object.access_token)
         ? globalThis.String(object.access_token)
         : "",
       refreshToken: isSet(object.refresh_token)
         ? globalThis.String(object.refresh_token)
         : "",
-      expiresAt: isSet(object.expires_at)
-        ? globalThis.Number(object.expires_at)
-        : 0,
-      refreshExpiresAt: isSet(object.refresh_expires_at)
-        ? globalThis.Number(object.refresh_expires_at)
+      expires: isSet(object.expires) ? globalThis.Number(object.expires) : 0,
+      refreshExpires: isSet(object.refresh_expires)
+        ? globalThis.Number(object.refresh_expires)
         : 0
     };
   },
 
   toJSON(message: RefreshTokenResponse): unknown {
     const obj: any = {};
+    if (message.user !== undefined) {
+      obj.user = User.toJSON(message.user);
+    }
     if (message.accessToken !== "") {
       obj.access_token = message.accessToken;
     }
     if (message.refreshToken !== "") {
       obj.refresh_token = message.refreshToken;
     }
-    if (message.expiresAt !== 0) {
-      obj.expires_at = Math.round(message.expiresAt);
+    if (message.expires !== 0) {
+      obj.expires = Math.round(message.expires);
     }
-    if (message.refreshExpiresAt !== 0) {
-      obj.refresh_expires_at = Math.round(message.refreshExpiresAt);
+    if (message.refreshExpires !== 0) {
+      obj.refresh_expires = Math.round(message.refreshExpires);
     }
     return obj;
   },
@@ -724,10 +775,409 @@ export const RefreshTokenResponse: MessageFns<RefreshTokenResponse> = {
     object: I
   ): RefreshTokenResponse {
     const message = createBaseRefreshTokenResponse();
+    message.user =
+      object.user !== undefined && object.user !== null
+        ? User.fromPartial(object.user)
+        : undefined;
     message.accessToken = object.accessToken ?? "";
     message.refreshToken = object.refreshToken ?? "";
-    message.expiresAt = object.expiresAt ?? 0;
-    message.refreshExpiresAt = object.refreshExpiresAt ?? 0;
+    message.expires = object.expires ?? 0;
+    message.refreshExpires = object.refreshExpires ?? 0;
+    return message;
+  }
+};
+
+function createBaseGetAsyncRoutesResponse(): GetAsyncRoutesResponse {
+  return { routes: [] };
+}
+
+export const GetAsyncRoutesResponse: MessageFns<GetAsyncRoutesResponse> = {
+  encode(
+    message: GetAsyncRoutesResponse,
+    writer: BinaryWriter = new BinaryWriter()
+  ): BinaryWriter {
+    for (const v of message.routes) {
+      RouteConfig.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number
+  ): GetAsyncRoutesResponse {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetAsyncRoutesResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.routes.push(RouteConfig.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetAsyncRoutesResponse {
+    return {
+      routes: globalThis.Array.isArray(object?.routes)
+        ? object.routes.map((e: any) => RouteConfig.fromJSON(e))
+        : []
+    };
+  },
+
+  toJSON(message: GetAsyncRoutesResponse): unknown {
+    const obj: any = {};
+    if (message.routes?.length) {
+      obj.routes = message.routes.map(e => RouteConfig.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GetAsyncRoutesResponse>, I>>(
+    base?: I
+  ): GetAsyncRoutesResponse {
+    return GetAsyncRoutesResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<GetAsyncRoutesResponse>, I>>(
+    object: I
+  ): GetAsyncRoutesResponse {
+    const message = createBaseGetAsyncRoutesResponse();
+    message.routes = object.routes?.map(e => RouteConfig.fromPartial(e)) || [];
+    return message;
+  }
+};
+
+function createBaseRouteMeta(): RouteMeta {
+  return {
+    title: "",
+    icon: "",
+    rank: 0,
+    showLink: false,
+    roles: [],
+    auths: []
+  };
+}
+
+export const RouteMeta: MessageFns<RouteMeta> = {
+  encode(
+    message: RouteMeta,
+    writer: BinaryWriter = new BinaryWriter()
+  ): BinaryWriter {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.icon !== "") {
+      writer.uint32(18).string(message.icon);
+    }
+    if (message.rank !== 0) {
+      writer.uint32(24).int32(message.rank);
+    }
+    if (message.showLink !== false) {
+      writer.uint32(32).bool(message.showLink);
+    }
+    for (const v of message.roles) {
+      writer.uint32(42).string(v!);
+    }
+    for (const v of message.auths) {
+      writer.uint32(50).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RouteMeta {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRouteMeta();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.title = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.icon = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.rank = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.showLink = reader.bool();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.roles.push(reader.string());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.auths.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RouteMeta {
+    return {
+      title: isSet(object.title) ? globalThis.String(object.title) : "",
+      icon: isSet(object.icon) ? globalThis.String(object.icon) : "",
+      rank: isSet(object.rank) ? globalThis.Number(object.rank) : 0,
+      showLink: isSet(object.showLink)
+        ? globalThis.Boolean(object.showLink)
+        : false,
+      roles: globalThis.Array.isArray(object?.roles)
+        ? object.roles.map((e: any) => globalThis.String(e))
+        : [],
+      auths: globalThis.Array.isArray(object?.auths)
+        ? object.auths.map((e: any) => globalThis.String(e))
+        : []
+    };
+  },
+
+  toJSON(message: RouteMeta): unknown {
+    const obj: any = {};
+    if (message.title !== "") {
+      obj.title = message.title;
+    }
+    if (message.icon !== "") {
+      obj.icon = message.icon;
+    }
+    if (message.rank !== 0) {
+      obj.rank = Math.round(message.rank);
+    }
+    if (message.showLink !== false) {
+      obj.showLink = message.showLink;
+    }
+    if (message.roles?.length) {
+      obj.roles = message.roles;
+    }
+    if (message.auths?.length) {
+      obj.auths = message.auths;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RouteMeta>, I>>(base?: I): RouteMeta {
+    return RouteMeta.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RouteMeta>, I>>(
+    object: I
+  ): RouteMeta {
+    const message = createBaseRouteMeta();
+    message.title = object.title ?? "";
+    message.icon = object.icon ?? "";
+    message.rank = object.rank ?? 0;
+    message.showLink = object.showLink ?? false;
+    message.roles = object.roles?.map(e => e) || [];
+    message.auths = object.auths?.map(e => e) || [];
+    return message;
+  }
+};
+
+function createBaseRouteConfig(): RouteConfig {
+  return {
+    path: "",
+    name: "",
+    redirect: "",
+    meta: undefined,
+    component: "",
+    children: []
+  };
+}
+
+export const RouteConfig: MessageFns<RouteConfig> = {
+  encode(
+    message: RouteConfig,
+    writer: BinaryWriter = new BinaryWriter()
+  ): BinaryWriter {
+    if (message.path !== "") {
+      writer.uint32(10).string(message.path);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.redirect !== "") {
+      writer.uint32(26).string(message.redirect);
+    }
+    if (message.meta !== undefined) {
+      RouteMeta.encode(message.meta, writer.uint32(34).fork()).join();
+    }
+    if (message.component !== "") {
+      writer.uint32(42).string(message.component);
+    }
+    for (const v of message.children) {
+      RouteConfig.encode(v!, writer.uint32(50).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): RouteConfig {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRouteConfig();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.path = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.redirect = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.meta = RouteMeta.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.component = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.children.push(RouteConfig.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RouteConfig {
+    return {
+      path: isSet(object.path) ? globalThis.String(object.path) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      redirect: isSet(object.redirect)
+        ? globalThis.String(object.redirect)
+        : "",
+      meta: isSet(object.meta) ? RouteMeta.fromJSON(object.meta) : undefined,
+      component: isSet(object.component)
+        ? globalThis.String(object.component)
+        : "",
+      children: globalThis.Array.isArray(object?.children)
+        ? object.children.map((e: any) => RouteConfig.fromJSON(e))
+        : []
+    };
+  },
+
+  toJSON(message: RouteConfig): unknown {
+    const obj: any = {};
+    if (message.path !== "") {
+      obj.path = message.path;
+    }
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.redirect !== "") {
+      obj.redirect = message.redirect;
+    }
+    if (message.meta !== undefined) {
+      obj.meta = RouteMeta.toJSON(message.meta);
+    }
+    if (message.component !== "") {
+      obj.component = message.component;
+    }
+    if (message.children?.length) {
+      obj.children = message.children.map(e => RouteConfig.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<RouteConfig>, I>>(base?: I): RouteConfig {
+    return RouteConfig.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<RouteConfig>, I>>(
+    object: I
+  ): RouteConfig {
+    const message = createBaseRouteConfig();
+    message.path = object.path ?? "";
+    message.name = object.name ?? "";
+    message.redirect = object.redirect ?? "";
+    message.meta =
+      object.meta !== undefined && object.meta !== null
+        ? RouteMeta.fromPartial(object.meta)
+        : undefined;
+    message.component = object.component ?? "";
+    message.children =
+      object.children?.map(e => RouteConfig.fromPartial(e)) || [];
     return message;
   }
 };
@@ -740,6 +1190,7 @@ export interface Auth {
   Register(request: RegisterRequest): Promise<Empty>;
   /** 刷新认证令牌 */
   RefreshToken(request: RefreshTokenRequest): Promise<RefreshTokenResponse>;
+  GetAsyncRoutes(request: Empty): Promise<GetAsyncRoutesResponse>;
 }
 
 export const AuthServiceName = "api.auth.v1.Auth";
@@ -753,6 +1204,7 @@ export class AuthClientImpl implements Auth {
     this.Logout = this.Logout.bind(this);
     this.Register = this.Register.bind(this);
     this.RefreshToken = this.RefreshToken.bind(this);
+    this.GetAsyncRoutes = this.GetAsyncRoutes.bind(this);
   }
   Login(request: LoginRequest): Promise<LoginResponse> {
     const data = LoginRequest.encode(request).finish();
@@ -777,6 +1229,14 @@ export class AuthClientImpl implements Auth {
     const promise = this.rpc.request(this.service, "RefreshToken", data);
     return promise.then(data =>
       RefreshTokenResponse.decode(new BinaryReader(data))
+    );
+  }
+
+  GetAsyncRoutes(request: Empty): Promise<GetAsyncRoutesResponse> {
+    const data = Empty.encode(request).finish();
+    const promise = this.rpc.request(this.service, "GetAsyncRoutes", data);
+    return promise.then(data =>
+      GetAsyncRoutesResponse.decode(new BinaryReader(data))
     );
   }
 }

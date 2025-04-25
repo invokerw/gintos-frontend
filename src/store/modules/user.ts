@@ -15,6 +15,11 @@ import {
 } from "@/api/user";
 import { useMultiTagsStoreHook } from "./multiTags";
 import { type DataInfo, setToken, removeToken, userKey } from "@/utils/auth";
+import {
+  type RefreshTokenRequest,
+  RefreshTokenResponse,
+  type LoginRequest
+} from "@/api/api/v1/auth/auth";
 
 export const useUserStore = defineStore({
   id: "pure-user",
@@ -65,11 +70,14 @@ export const useUserStore = defineStore({
       this.loginDay = Number(value);
     },
     /** 登入 */
-    async loginByUsername(data) {
+    async loginByUsername(data: LoginRequest) {
       return new Promise<UserResult>((resolve, reject) => {
         getLogin(data)
           .then(data => {
-            if (data?.success) setToken(data.data);
+            if (data?.code == 0) {
+              data.data = RefreshTokenResponse.fromJSON(data.data);
+              setToken(data.data);
+            }
             resolve(data);
           })
           .catch(error => {
@@ -88,11 +96,12 @@ export const useUserStore = defineStore({
       router.push("/login");
     },
     /** 刷新`token` */
-    async handRefreshToken(data) {
+    async handRefreshToken(data: RefreshTokenRequest) {
       return new Promise<RefreshTokenResult>((resolve, reject) => {
         refreshTokenApi(data)
           .then(data => {
-            if (data) {
+            if (data.code == 0) {
+              data.data = RefreshTokenResponse.fromJSON(data.data);
               setToken(data.data);
               resolve(data);
             }
