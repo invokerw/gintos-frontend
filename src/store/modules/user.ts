@@ -70,7 +70,6 @@ export const useUserStore = defineStore({
       return new Promise<LoginResponse>((resolve, reject) => {
         getLogin(data)
           .then(data => {
-            console.log("loginByUsername", data);
             setToken(data);
             resolve(data);
           })
