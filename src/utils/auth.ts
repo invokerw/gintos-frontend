@@ -40,7 +40,7 @@ export const multipleTabsKey = "multiple-tabs";
 /** 获取`token` */
 export function getToken(): DataInfo<number> {
   // 此处与`TokenKey`相同，此写法解决初始化时`Cookies`中不存在`TokenKey`报错
-  console.log("Cookies.get(TokenKey)", Cookies.get(TokenKey));
+  // console.log("Cookies.get(TokenKey)", Cookies.get(TokenKey));
   return Cookies.get(TokenKey)
     ? JSON.parse(Cookies.get(TokenKey))
     : storageLocal().getItem(userKey);
@@ -130,7 +130,8 @@ export function removeToken() {
 
 /** 格式化token（jwt格式） */
 export const formatToken = (token: string): string => {
-  return "Bearer " + token;
+  // return "Bearer " + token;
+  return token;
 };
 
 /** 是否有按钮级别的权限（根据登录接口返回的`permissions`字段进行判断）*/

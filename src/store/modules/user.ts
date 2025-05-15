@@ -7,18 +7,14 @@ import {
   routerArrays,
   storageLocal
 } from "../utils";
-import {
-  type UserResult,
-  type RefreshTokenResult,
-  getLogin,
-  refreshTokenApi
-} from "@/api/user";
+import { getLogin, refreshTokenApi } from "@/api/user";
 import { useMultiTagsStoreHook } from "./multiTags";
 import { type DataInfo, setToken, removeToken, userKey } from "@/utils/auth";
-import {
-  type RefreshTokenRequest,
+import type {
+  RefreshTokenRequest,
   RefreshTokenResponse,
-  type LoginRequest
+  LoginRequest,
+  LoginResponse
 } from "@/api/api/v1/auth/auth";
 
 export const useUserStore = defineStore({
@@ -71,13 +67,11 @@ export const useUserStore = defineStore({
     },
     /** 登入 */
     async loginByUsername(data: LoginRequest) {
-      return new Promise<UserResult>((resolve, reject) => {
+      return new Promise<LoginResponse>((resolve, reject) => {
         getLogin(data)
           .then(data => {
-            if (data?.code == 0) {
-              data.data = RefreshTokenResponse.fromJSON(data.data);
-              setToken(data.data);
-            }
+            console.log("loginByUsername", data);
+            setToken(data);
             resolve(data);
           })
           .catch(error => {
@@ -97,14 +91,11 @@ export const useUserStore = defineStore({
     },
     /** 刷新`token` */
     async handRefreshToken(data: RefreshTokenRequest) {
-      return new Promise<RefreshTokenResult>((resolve, reject) => {
+      return new Promise<RefreshTokenResponse>((resolve, reject) => {
         refreshTokenApi(data)
           .then(data => {
-            if (data.code == 0) {
-              data.data = RefreshTokenResponse.fromJSON(data.data);
-              setToken(data.data);
-              resolve(data);
-            }
+            setToken(data);
+            resolve(data);
           })
           .catch(error => {
             reject(error);

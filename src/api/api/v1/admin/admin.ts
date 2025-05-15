@@ -7,7 +7,7 @@
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import { Empty } from "../../google/protobuf/empty";
-import { ApiInfo, ApiTypeInfo, PageInfo } from "../common/common";
+import { ApiInfo, ApiTypeInfo, IntValue, PageInfo } from "../common/common";
 import { Role, User } from "../common/user";
 
 export const protobufPackage = "api.v1.admin";
@@ -1328,9 +1328,11 @@ export interface Admin {
   GetUserList(request: GetUserListRequest): Promise<GetUserListResponse>;
   UpdateUsers(request: UpdateUsersRequest): Promise<UpdateUsersResponse>;
   DeleteUsers(request: DeleteUsersRequest): Promise<Empty>;
+  GetUserCount(request: Empty): Promise<IntValue>;
   GetRoleList(request: GetRoleListRequest): Promise<GetRoleListResponse>;
   UpdateRoles(request: UpdateRolesRequest): Promise<UpdateRolesResponse>;
   DeleteRoles(request: DeleteRolesRequest): Promise<Empty>;
+  GetRoleCount(request: Empty): Promise<IntValue>;
   GetApiInfoList(request: Empty): Promise<GetApiInfoListResponse>;
   RoleGetPolicy(request: RoleGetPolicyRequest): Promise<RoleGetPolicyResponse>;
   RoleUpdatePolicy(request: RoleUpdatePolicyRequest): Promise<Empty>;
@@ -1346,9 +1348,11 @@ export class AdminClientImpl implements Admin {
     this.GetUserList = this.GetUserList.bind(this);
     this.UpdateUsers = this.UpdateUsers.bind(this);
     this.DeleteUsers = this.DeleteUsers.bind(this);
+    this.GetUserCount = this.GetUserCount.bind(this);
     this.GetRoleList = this.GetRoleList.bind(this);
     this.UpdateRoles = this.UpdateRoles.bind(this);
     this.DeleteRoles = this.DeleteRoles.bind(this);
+    this.GetRoleCount = this.GetRoleCount.bind(this);
     this.GetApiInfoList = this.GetApiInfoList.bind(this);
     this.RoleGetPolicy = this.RoleGetPolicy.bind(this);
     this.RoleUpdatePolicy = this.RoleUpdatePolicy.bind(this);
@@ -1375,6 +1379,12 @@ export class AdminClientImpl implements Admin {
     return promise.then(data => Empty.decode(new BinaryReader(data)));
   }
 
+  GetUserCount(request: Empty): Promise<IntValue> {
+    const data = Empty.encode(request).finish();
+    const promise = this.rpc.request(this.service, "GetUserCount", data);
+    return promise.then(data => IntValue.decode(new BinaryReader(data)));
+  }
+
   GetRoleList(request: GetRoleListRequest): Promise<GetRoleListResponse> {
     const data = GetRoleListRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "GetRoleList", data);
@@ -1395,6 +1405,12 @@ export class AdminClientImpl implements Admin {
     const data = DeleteRolesRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "DeleteRoles", data);
     return promise.then(data => Empty.decode(new BinaryReader(data)));
+  }
+
+  GetRoleCount(request: Empty): Promise<IntValue> {
+    const data = Empty.encode(request).finish();
+    const promise = this.rpc.request(this.service, "GetRoleCount", data);
+    return promise.then(data => IntValue.decode(new BinaryReader(data)));
   }
 
   GetApiInfoList(request: Empty): Promise<GetApiInfoListResponse> {

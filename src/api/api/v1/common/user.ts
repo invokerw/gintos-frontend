@@ -439,23 +439,23 @@ export const User: MessageFns<User> = {
   fromJSON(object: any): User {
     return {
       id: isSet(object.id) ? globalThis.Number(object.id) : undefined,
-      roleName: isSet(object.roleName)
-        ? globalThis.String(object.roleName)
+      roleName: isSet(object.role_name)
+        ? globalThis.String(object.role_name)
         : undefined,
-      createBy: isSet(object.createBy)
-        ? globalThis.Number(object.createBy)
+      createBy: isSet(object.create_by)
+        ? globalThis.Number(object.create_by)
         : undefined,
-      updateBy: isSet(object.updateBy)
-        ? globalThis.Number(object.updateBy)
+      updateBy: isSet(object.update_by)
+        ? globalThis.Number(object.update_by)
         : undefined,
-      userName: isSet(object.username)
-        ? globalThis.String(object.username)
+      userName: isSet(object.user_name)
+        ? globalThis.String(object.user_name)
         : undefined,
       password: isSet(object.password)
         ? globalThis.String(object.password)
         : undefined,
-      nickName: isSet(object.nickname)
-        ? globalThis.String(object.nickname)
+      nickName: isSet(object.nick_name)
+        ? globalThis.String(object.nick_name)
         : undefined,
       avatar: isSet(object.avatar)
         ? globalThis.String(object.avatar)
@@ -470,8 +470,8 @@ export const User: MessageFns<User> = {
       remark: isSet(object.remark)
         ? globalThis.String(object.remark)
         : undefined,
-      lastLoginTime: isSet(object.lastLoginTime)
-        ? globalThis.Number(object.lastLoginTime)
+      lastLoginTime: isSet(object.last_login_time)
+        ? globalThis.Number(object.last_login_time)
         : undefined,
       status: isSet(object.status)
         ? userStatusFromJSON(object.status)
@@ -482,11 +482,11 @@ export const User: MessageFns<User> = {
       roles: globalThis.Array.isArray(object?.roles)
         ? object.roles.map((e: any) => globalThis.String(e))
         : [],
-      createTime: isSet(object.createTime)
-        ? globalThis.Number(object.createTime)
+      createTime: isSet(object.create_time)
+        ? globalThis.Number(object.create_time)
         : undefined,
-      updateTime: isSet(object.updateTime)
-        ? globalThis.Number(object.updateTime)
+      updateTime: isSet(object.update_time)
+        ? globalThis.Number(object.update_time)
         : undefined
     };
   },
@@ -497,22 +497,22 @@ export const User: MessageFns<User> = {
       obj.id = Math.round(message.id);
     }
     if (message.roleName !== undefined) {
-      obj.roleName = message.roleName;
+      obj.role_name = message.roleName;
     }
     if (message.createBy !== undefined) {
-      obj.createBy = Math.round(message.createBy);
+      obj.create_by = Math.round(message.createBy);
     }
     if (message.updateBy !== undefined) {
-      obj.updateBy = Math.round(message.updateBy);
+      obj.update_by = Math.round(message.updateBy);
     }
     if (message.userName !== undefined) {
-      obj.username = message.userName;
+      obj.user_name = message.userName;
     }
     if (message.password !== undefined) {
       obj.password = message.password;
     }
     if (message.nickName !== undefined) {
-      obj.nickname = message.nickName;
+      obj.nick_name = message.nickName;
     }
     if (message.avatar !== undefined) {
       obj.avatar = message.avatar;
@@ -530,7 +530,7 @@ export const User: MessageFns<User> = {
       obj.remark = message.remark;
     }
     if (message.lastLoginTime !== undefined) {
-      obj.lastLoginTime = Math.round(message.lastLoginTime);
+      obj.last_login_time = Math.round(message.lastLoginTime);
     }
     if (message.status !== undefined) {
       obj.status = userStatusToJSON(message.status);
@@ -542,10 +542,10 @@ export const User: MessageFns<User> = {
       obj.roles = message.roles;
     }
     if (message.createTime !== undefined) {
-      obj.createTime = Math.round(message.createTime);
+      obj.create_time = Math.round(message.createTime);
     }
     if (message.updateTime !== undefined) {
-      obj.updateTime = Math.round(message.updateTime);
+      obj.update_time = Math.round(message.updateTime);
     }
     return obj;
   },

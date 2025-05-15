@@ -34,6 +34,11 @@ export interface ApiTypeInfo {
   apiInfo: ApiInfo[];
 }
 
+export interface IntValue {
+  /** 数据 */
+  data: number;
+}
+
 function createBasePageInfo(): PageInfo {
   return { offset: 0, pageSize: 0 };
 }
@@ -306,6 +311,68 @@ export const ApiTypeInfo: MessageFns<ApiTypeInfo> = {
     const message = createBaseApiTypeInfo();
     message.type = object.type ?? "";
     message.apiInfo = object.apiInfo?.map(e => ApiInfo.fromPartial(e)) || [];
+    return message;
+  }
+};
+
+function createBaseIntValue(): IntValue {
+  return { data: 0 };
+}
+
+export const IntValue: MessageFns<IntValue> = {
+  encode(
+    message: IntValue,
+    writer: BinaryWriter = new BinaryWriter()
+  ): BinaryWriter {
+    if (message.data !== 0) {
+      writer.uint32(8).int32(message.data);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): IntValue {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIntValue();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.data = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IntValue {
+    return { data: isSet(object.data) ? globalThis.Number(object.data) : 0 };
+  },
+
+  toJSON(message: IntValue): unknown {
+    const obj: any = {};
+    if (message.data !== 0) {
+      obj.data = Math.round(message.data);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<IntValue>, I>>(base?: I): IntValue {
+    return IntValue.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<IntValue>, I>>(object: I): IntValue {
+    const message = createBaseIntValue();
+    message.data = object.data ?? 0;
     return message;
   }
 };

@@ -29,6 +29,12 @@ const defaultConfig: AxiosRequestConfig = {
   }
 };
 
+type ApiResult = {
+  data: any;
+  msg?: string;
+  code?: number;
+};
+
 class PureHttp {
   constructor() {
     this.httpInterceptorsRequest();
@@ -88,7 +94,7 @@ class PureHttp {
                     useUserStoreHook()
                       .handRefreshToken({ refreshToken: data.refreshToken })
                       .then(res => {
-                        const token = res.data.accessToken;
+                        const token = res.accessToken;
                         config.headers["Authorization"] = formatToken(token);
                         PureHttp.requests.forEach(cb => cb(token));
                         PureHttp.requests = [];
@@ -170,6 +176,30 @@ class PureHttp {
           reject(error);
         });
     });
+  }
+
+  public request2<T>(
+    method: RequestMethods,
+    url: string,
+    param?: AxiosRequestConfig,
+    fromJSON?: (data: any) => T,
+    axiosConfig?: PureHttpRequestConfig
+  ): Promise<T> {
+    return this.request<ApiResult>(method, url, param, axiosConfig).then(
+      (res: ApiResult) => {
+        // console.log("res", res);
+        if (res.code === 0) {
+          if (fromJSON === undefined) {
+            return res.data as T;
+          }
+          const ret = fromJSON(res.data);
+          // console.log("ret", ret);
+          return ret as T;
+        } else {
+          throw new Error("url:" + url + " ret:" + res.code + " " + res.msg);
+        }
+      }
+    );
   }
 
   /** 单独抽离的`post`工具函数 */
