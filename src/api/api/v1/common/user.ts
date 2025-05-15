@@ -140,8 +140,8 @@ export function userStatusToJSON(object: UserStatus): string {
 export interface User {
   /** 用户ID */
   id?: number | undefined;
-  /** 角色ID */
-  roleId?: number | undefined;
+  /** 角色名称 */
+  roleName?: string | undefined;
   /** 创建者ID */
   createBy?: number | undefined;
   /** 更新者ID */
@@ -176,10 +176,24 @@ export interface User {
   updateTime?: number | undefined;
 }
 
+/** Role */
+export interface Role {
+  /** 角色ID */
+  id?: number | undefined;
+  name?: string | undefined;
+  desc?: string | undefined;
+  parentId?: number | undefined;
+  sortId?: number | undefined;
+  /** 创建时间 */
+  createTime?: number | undefined;
+  /** 更新时间 */
+  updateTime?: number | undefined;
+}
+
 function createBaseUser(): User {
   return {
     id: undefined,
-    roleId: undefined,
+    roleName: undefined,
     createBy: undefined,
     updateBy: undefined,
     userName: undefined,
@@ -207,8 +221,8 @@ export const User: MessageFns<User> = {
     if (message.id !== undefined) {
       writer.uint32(8).uint64(message.id);
     }
-    if (message.roleId !== undefined) {
-      writer.uint32(16).uint64(message.roleId);
+    if (message.roleName !== undefined) {
+      writer.uint32(18).string(message.roleName);
     }
     if (message.createBy !== undefined) {
       writer.uint32(56).uint64(message.createBy);
@@ -278,11 +292,11 @@ export const User: MessageFns<User> = {
           continue;
         }
         case 2: {
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.roleId = longToNumber(reader.uint64());
+          message.roleName = reader.string();
           continue;
         }
         case 7: {
@@ -425,8 +439,8 @@ export const User: MessageFns<User> = {
   fromJSON(object: any): User {
     return {
       id: isSet(object.id) ? globalThis.Number(object.id) : undefined,
-      roleId: isSet(object.roleId)
-        ? globalThis.Number(object.roleId)
+      roleName: isSet(object.roleName)
+        ? globalThis.String(object.roleName)
         : undefined,
       createBy: isSet(object.createBy)
         ? globalThis.Number(object.createBy)
@@ -482,8 +496,8 @@ export const User: MessageFns<User> = {
     if (message.id !== undefined) {
       obj.id = Math.round(message.id);
     }
-    if (message.roleId !== undefined) {
-      obj.roleId = Math.round(message.roleId);
+    if (message.roleName !== undefined) {
+      obj.roleName = message.roleName;
     }
     if (message.createBy !== undefined) {
       obj.createBy = Math.round(message.createBy);
@@ -542,7 +556,7 @@ export const User: MessageFns<User> = {
   fromPartial<I extends Exact<DeepPartial<User>, I>>(object: I): User {
     const message = createBaseUser();
     message.id = object.id ?? undefined;
-    message.roleId = object.roleId ?? undefined;
+    message.roleName = object.roleName ?? undefined;
     message.createBy = object.createBy ?? undefined;
     message.updateBy = object.updateBy ?? undefined;
     message.userName = object.userName ?? undefined;
@@ -557,6 +571,182 @@ export const User: MessageFns<User> = {
     message.status = object.status ?? undefined;
     message.authority = object.authority ?? undefined;
     message.roles = object.roles?.map(e => e) || [];
+    message.createTime = object.createTime ?? undefined;
+    message.updateTime = object.updateTime ?? undefined;
+    return message;
+  }
+};
+
+function createBaseRole(): Role {
+  return {
+    id: undefined,
+    name: undefined,
+    desc: undefined,
+    parentId: undefined,
+    sortId: undefined,
+    createTime: undefined,
+    updateTime: undefined
+  };
+}
+
+export const Role: MessageFns<Role> = {
+  encode(
+    message: Role,
+    writer: BinaryWriter = new BinaryWriter()
+  ): BinaryWriter {
+    if (message.id !== undefined) {
+      writer.uint32(8).uint64(message.id);
+    }
+    if (message.name !== undefined) {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.desc !== undefined) {
+      writer.uint32(26).string(message.desc);
+    }
+    if (message.parentId !== undefined) {
+      writer.uint32(32).uint64(message.parentId);
+    }
+    if (message.sortId !== undefined) {
+      writer.uint32(40).int32(message.sortId);
+    }
+    if (message.createTime !== undefined) {
+      writer.uint32(1600).int64(message.createTime);
+    }
+    if (message.updateTime !== undefined) {
+      writer.uint32(1608).int64(message.updateTime);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): Role {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseRole();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.id = longToNumber(reader.uint64());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.desc = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.parentId = longToNumber(reader.uint64());
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.sortId = reader.int32();
+          continue;
+        }
+        case 200: {
+          if (tag !== 1600) {
+            break;
+          }
+
+          message.createTime = longToNumber(reader.int64());
+          continue;
+        }
+        case 201: {
+          if (tag !== 1608) {
+            break;
+          }
+
+          message.updateTime = longToNumber(reader.int64());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Role {
+    return {
+      id: isSet(object.id) ? globalThis.Number(object.id) : undefined,
+      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
+      desc: isSet(object.desc) ? globalThis.String(object.desc) : undefined,
+      parentId: isSet(object.parentID)
+        ? globalThis.Number(object.parentID)
+        : undefined,
+      sortId: isSet(object.sortID)
+        ? globalThis.Number(object.sortID)
+        : undefined,
+      createTime: isSet(object.createTime)
+        ? globalThis.Number(object.createTime)
+        : undefined,
+      updateTime: isSet(object.updateTime)
+        ? globalThis.Number(object.updateTime)
+        : undefined
+    };
+  },
+
+  toJSON(message: Role): unknown {
+    const obj: any = {};
+    if (message.id !== undefined) {
+      obj.id = Math.round(message.id);
+    }
+    if (message.name !== undefined) {
+      obj.name = message.name;
+    }
+    if (message.desc !== undefined) {
+      obj.desc = message.desc;
+    }
+    if (message.parentId !== undefined) {
+      obj.parentID = Math.round(message.parentId);
+    }
+    if (message.sortId !== undefined) {
+      obj.sortID = Math.round(message.sortId);
+    }
+    if (message.createTime !== undefined) {
+      obj.createTime = Math.round(message.createTime);
+    }
+    if (message.updateTime !== undefined) {
+      obj.updateTime = Math.round(message.updateTime);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Role>, I>>(base?: I): Role {
+    return Role.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<Role>, I>>(object: I): Role {
+    const message = createBaseRole();
+    message.id = object.id ?? undefined;
+    message.name = object.name ?? undefined;
+    message.desc = object.desc ?? undefined;
+    message.parentId = object.parentId ?? undefined;
+    message.sortId = object.sortId ?? undefined;
     message.createTime = object.createTime ?? undefined;
     message.updateTime = object.updateTime ?? undefined;
     return message;

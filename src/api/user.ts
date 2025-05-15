@@ -12,7 +12,7 @@ export type RefreshTokenResult = ApiResult<RefreshTokenResponse>;
 
 /** 登录 */
 export const getLogin = (data?: LoginRequest) => {
-  return http.request<UserResult>("post", baseUrlApi("/api/auth/v1/login"), {
+  return http.request<UserResult>("post", baseUrlApi("/api/v1/auth/login"), {
     data
   });
 };
@@ -21,7 +21,7 @@ export const getLogin = (data?: LoginRequest) => {
 export const refreshTokenApi = (data?: RefreshTokenRequest) => {
   return http.request<RefreshTokenResult>(
     "post",
-    baseUrlApi("/api/auth/v1/refresh_token"),
+    baseUrlApi("/api/v1/auth/refresh_token"),
     { data }
   );
 };

@@ -16,6 +16,24 @@ export interface PageInfo {
   pageSize: number;
 }
 
+export interface ApiInfo {
+  /** api 名称 */
+  name: string;
+  /** api 路径 */
+  path: string;
+  /** 请求方法 */
+  method: string;
+  /** 请求类型 */
+  type: string;
+}
+
+export interface ApiTypeInfo {
+  /** 分类 */
+  type: string;
+  /** API信息 */
+  apiInfo: ApiInfo[];
+}
+
 function createBasePageInfo(): PageInfo {
   return { offset: 0, pageSize: 0 };
 }
@@ -92,6 +110,202 @@ export const PageInfo: MessageFns<PageInfo> = {
     const message = createBasePageInfo();
     message.offset = object.offset ?? 0;
     message.pageSize = object.pageSize ?? 0;
+    return message;
+  }
+};
+
+function createBaseApiInfo(): ApiInfo {
+  return { name: "", path: "", method: "", type: "" };
+}
+
+export const ApiInfo: MessageFns<ApiInfo> = {
+  encode(
+    message: ApiInfo,
+    writer: BinaryWriter = new BinaryWriter()
+  ): BinaryWriter {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.path !== "") {
+      writer.uint32(18).string(message.path);
+    }
+    if (message.method !== "") {
+      writer.uint32(26).string(message.method);
+    }
+    if (message.type !== "") {
+      writer.uint32(34).string(message.type);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ApiInfo {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseApiInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.path = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.method = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.type = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ApiInfo {
+    return {
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      path: isSet(object.path) ? globalThis.String(object.path) : "",
+      method: isSet(object.method) ? globalThis.String(object.method) : "",
+      type: isSet(object.type) ? globalThis.String(object.type) : ""
+    };
+  },
+
+  toJSON(message: ApiInfo): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.path !== "") {
+      obj.path = message.path;
+    }
+    if (message.method !== "") {
+      obj.method = message.method;
+    }
+    if (message.type !== "") {
+      obj.type = message.type;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ApiInfo>, I>>(base?: I): ApiInfo {
+    return ApiInfo.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ApiInfo>, I>>(object: I): ApiInfo {
+    const message = createBaseApiInfo();
+    message.name = object.name ?? "";
+    message.path = object.path ?? "";
+    message.method = object.method ?? "";
+    message.type = object.type ?? "";
+    return message;
+  }
+};
+
+function createBaseApiTypeInfo(): ApiTypeInfo {
+  return { type: "", apiInfo: [] };
+}
+
+export const ApiTypeInfo: MessageFns<ApiTypeInfo> = {
+  encode(
+    message: ApiTypeInfo,
+    writer: BinaryWriter = new BinaryWriter()
+  ): BinaryWriter {
+    if (message.type !== "") {
+      writer.uint32(10).string(message.type);
+    }
+    for (const v of message.apiInfo) {
+      ApiInfo.encode(v!, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ApiTypeInfo {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseApiTypeInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.type = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.apiInfo.push(ApiInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ApiTypeInfo {
+    return {
+      type: isSet(object.type) ? globalThis.String(object.type) : "",
+      apiInfo: globalThis.Array.isArray(object?.apiInfo)
+        ? object.apiInfo.map((e: any) => ApiInfo.fromJSON(e))
+        : []
+    };
+  },
+
+  toJSON(message: ApiTypeInfo): unknown {
+    const obj: any = {};
+    if (message.type !== "") {
+      obj.type = message.type;
+    }
+    if (message.apiInfo?.length) {
+      obj.apiInfo = message.apiInfo.map(e => ApiInfo.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ApiTypeInfo>, I>>(base?: I): ApiTypeInfo {
+    return ApiTypeInfo.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ApiTypeInfo>, I>>(
+    object: I
+  ): ApiTypeInfo {
+    const message = createBaseApiTypeInfo();
+    message.type = object.type ?? "";
+    message.apiInfo = object.apiInfo?.map(e => ApiInfo.fromPartial(e)) || [];
     return message;
   }
 };

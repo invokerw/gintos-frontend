@@ -7,7 +7,7 @@
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
-export const protobufPackage = "helloworld.v1";
+export const protobufPackage = "api.v1.helloworld";
 
 /** The request message containing the user's name. */
 export interface HelloRequest {
@@ -158,7 +158,7 @@ export interface Greeter {
   SayHello(request: HelloRequest): Promise<HelloReply>;
 }
 
-export const GreeterServiceName = "helloworld.v1.Greeter";
+export const GreeterServiceName = "api.v1.helloworld.Greeter";
 export class GreeterClientImpl implements Greeter {
   private readonly rpc: Rpc;
   private readonly service: string;

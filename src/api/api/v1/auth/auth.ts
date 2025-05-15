@@ -9,7 +9,7 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import { Empty } from "../../google/protobuf/empty";
 import { User } from "../common/user";
 
-export const protobufPackage = "api.auth.v1";
+export const protobufPackage = "api.v1.auth";
 
 /** 验证密码结果码 */
 export enum VerifyPasswordResult {
@@ -1193,7 +1193,7 @@ export interface Auth {
   GetAsyncRoutes(request: Empty): Promise<GetAsyncRoutesResponse>;
 }
 
-export const AuthServiceName = "api.auth.v1.Auth";
+export const AuthServiceName = "api.v1.auth.Auth";
 export class AuthClientImpl implements Auth {
   private readonly rpc: Rpc;
   private readonly service: string;

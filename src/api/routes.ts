@@ -7,6 +7,6 @@ type GetAsyncRoutesResult = ApiResult<GetAsyncRoutesResponse>;
 export const getAsyncRoutes = () => {
   return http.request<GetAsyncRoutesResult>(
     "get",
-    baseUrlApi("/api/auth/v1/get_async_routes")
+    baseUrlApi("/api/v1/auth/get_async_routes")
   );
 };

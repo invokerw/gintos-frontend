@@ -8,7 +8,7 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import { User } from "../common/user";
 
-export const protobufPackage = "api.base.v1";
+export const protobufPackage = "api.v1.base";
 
 /** 获取当前用户信息 - 请求 */
 export interface GetMeRequest {
@@ -161,7 +161,7 @@ export interface Base {
   GetMe(request: GetMeRequest): Promise<GetMeResponse>;
 }
 
-export const BaseServiceName = "api.base.v1.Base";
+export const BaseServiceName = "api.v1.base.Base";
 export class BaseClientImpl implements Base {
   private readonly rpc: Rpc;
   private readonly service: string;
