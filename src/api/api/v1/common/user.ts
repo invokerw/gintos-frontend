@@ -157,7 +157,7 @@ export interface User {
   /** 邮箱 */
   email?: string | undefined;
   /** 手机号 */
-  mobile?: string | undefined;
+  phone?: string | undefined;
   /** 性别 */
   gender?: UserGender | undefined;
   /** 备注名 */
@@ -201,7 +201,7 @@ function createBaseUser(): User {
     nickName: undefined,
     avatar: undefined,
     email: undefined,
-    mobile: undefined,
+    phone: undefined,
     gender: undefined,
     remark: undefined,
     lastLoginTime: undefined,
@@ -245,8 +245,8 @@ export const User: MessageFns<User> = {
     if (message.email !== undefined) {
       writer.uint32(114).string(message.email);
     }
-    if (message.mobile !== undefined) {
-      writer.uint32(122).string(message.mobile);
+    if (message.phone !== undefined) {
+      writer.uint32(122).string(message.phone);
     }
     if (message.gender !== undefined) {
       writer.uint32(136).int32(message.gender);
@@ -360,7 +360,7 @@ export const User: MessageFns<User> = {
             break;
           }
 
-          message.mobile = reader.string();
+          message.phone = reader.string();
           continue;
         }
         case 17: {
@@ -461,9 +461,7 @@ export const User: MessageFns<User> = {
         ? globalThis.String(object.avatar)
         : undefined,
       email: isSet(object.email) ? globalThis.String(object.email) : undefined,
-      mobile: isSet(object.mobile)
-        ? globalThis.String(object.mobile)
-        : undefined,
+      phone: isSet(object.phone) ? globalThis.String(object.phone) : undefined,
       gender: isSet(object.gender)
         ? userGenderFromJSON(object.gender)
         : undefined,
@@ -520,8 +518,8 @@ export const User: MessageFns<User> = {
     if (message.email !== undefined) {
       obj.email = message.email;
     }
-    if (message.mobile !== undefined) {
-      obj.mobile = message.mobile;
+    if (message.phone !== undefined) {
+      obj.phone = message.phone;
     }
     if (message.gender !== undefined) {
       obj.gender = userGenderToJSON(message.gender);
@@ -564,7 +562,7 @@ export const User: MessageFns<User> = {
     message.nickName = object.nickName ?? undefined;
     message.avatar = object.avatar ?? undefined;
     message.email = object.email ?? undefined;
-    message.mobile = object.mobile ?? undefined;
+    message.phone = object.phone ?? undefined;
     message.gender = object.gender ?? undefined;
     message.remark = object.remark ?? undefined;
     message.lastLoginTime = object.lastLoginTime ?? undefined;

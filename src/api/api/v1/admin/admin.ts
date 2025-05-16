@@ -8,7 +8,13 @@
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 import { Empty } from "../../google/protobuf/empty";
 import { ApiInfo, ApiTypeInfo, IntValue, PageInfo } from "../common/common";
-import { Role, User } from "../common/user";
+import {
+  Role,
+  User,
+  UserStatus,
+  userStatusFromJSON,
+  userStatusToJSON
+} from "../common/user";
 
 export const protobufPackage = "api.v1.admin";
 
@@ -17,8 +23,10 @@ export interface GetUserListRequest {
   page: PageInfo | undefined;
   /** 登录名 */
   username?: string | undefined;
-  /** 昵称 */
-  nickname?: string | undefined;
+  /** 手机号 */
+  phone?: string | undefined;
+  status?: UserStatus | undefined;
+  email?: string | undefined;
 }
 
 export interface GetUserListResponse {
@@ -93,7 +101,13 @@ export interface RoleUpdatePolicyRequest {
 }
 
 function createBaseGetUserListRequest(): GetUserListRequest {
-  return { page: undefined, username: undefined, nickname: undefined };
+  return {
+    page: undefined,
+    username: undefined,
+    phone: undefined,
+    status: undefined,
+    email: undefined
+  };
 }
 
 export const GetUserListRequest: MessageFns<GetUserListRequest> = {
@@ -107,8 +121,14 @@ export const GetUserListRequest: MessageFns<GetUserListRequest> = {
     if (message.username !== undefined) {
       writer.uint32(18).string(message.username);
     }
-    if (message.nickname !== undefined) {
-      writer.uint32(26).string(message.nickname);
+    if (message.phone !== undefined) {
+      writer.uint32(26).string(message.phone);
+    }
+    if (message.status !== undefined) {
+      writer.uint32(32).int32(message.status);
+    }
+    if (message.email !== undefined) {
+      writer.uint32(42).string(message.email);
     }
     return writer;
   },
@@ -145,7 +165,23 @@ export const GetUserListRequest: MessageFns<GetUserListRequest> = {
             break;
           }
 
-          message.nickname = reader.string();
+          message.phone = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.email = reader.string();
           continue;
         }
       }
@@ -163,9 +199,11 @@ export const GetUserListRequest: MessageFns<GetUserListRequest> = {
       username: isSet(object.username)
         ? globalThis.String(object.username)
         : undefined,
-      nickname: isSet(object.nickname)
-        ? globalThis.String(object.nickname)
-        : undefined
+      phone: isSet(object.phone) ? globalThis.String(object.phone) : undefined,
+      status: isSet(object.status)
+        ? userStatusFromJSON(object.status)
+        : undefined,
+      email: isSet(object.email) ? globalThis.String(object.email) : undefined
     };
   },
 
@@ -177,8 +215,14 @@ export const GetUserListRequest: MessageFns<GetUserListRequest> = {
     if (message.username !== undefined) {
       obj.username = message.username;
     }
-    if (message.nickname !== undefined) {
-      obj.nickname = message.nickname;
+    if (message.phone !== undefined) {
+      obj.phone = message.phone;
+    }
+    if (message.status !== undefined) {
+      obj.status = userStatusToJSON(message.status);
+    }
+    if (message.email !== undefined) {
+      obj.email = message.email;
     }
     return obj;
   },
@@ -197,7 +241,9 @@ export const GetUserListRequest: MessageFns<GetUserListRequest> = {
         ? PageInfo.fromPartial(object.page)
         : undefined;
     message.username = object.username ?? undefined;
-    message.nickname = object.nickname ?? undefined;
+    message.phone = object.phone ?? undefined;
+    message.status = object.status ?? undefined;
+    message.email = object.email ?? undefined;
     return message;
   }
 };
