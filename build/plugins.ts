@@ -49,7 +49,8 @@ export function getPluginsList(
     svgLoader(),
     Icons({
       compiler: "vue3",
-      scale: 1
+      scale: 1,
+      autoInstall: true // 自动安装项目中用到的图标集合
     }),
     VITE_CDN ? cdn : null,
     configCompressPlugin(VITE_COMPRESSION),
