@@ -65,11 +65,16 @@ export const getRoleList = (data?: GetRoleListRequest) => {
   );
 };
 
-export const getRoleIds = () => {
-  return getRoleList().then(res => {
-    const ids = res.roles.map(item => item.id);
-    console.log("getRoleIds ids", ids);
-    return ids;
+export const getRoleNames = () => {
+  return getRoleList({
+    page: {
+      offset: 0,
+      pageSize: 2000
+    }
+  } as GetRoleListRequest).then(res => {
+    const names = res.roles.map(item => item.name);
+    console.log("getRoleNames ids", names);
+    return names;
   });
 };
 

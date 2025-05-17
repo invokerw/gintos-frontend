@@ -17,7 +17,6 @@ import {
   deviceDetection
 } from "@pureadmin/utils";
 import {
-  getRoleIds,
   getUserList,
   getRoleList,
   getUserCount,
@@ -338,8 +337,8 @@ export function useUser(tableRef: Ref) {
     };
     const data = await getUserList(reqData);
     dataList.value = data.users;
-    console.log("onSearch data", data.users);
-    console.log("onSearch dataList", dataList.value);
+    // console.log("onSearch data", data.users);
+    // console.log("onSearch dataList", dataList.value);
 
     setTimeout(() => {
       loading.value = false;
@@ -523,8 +522,6 @@ export function useUser(tableRef: Ref) {
 
   /** 分配角色 */
   async function handleRole(row) {
-    // 选中的角色列表
-    const ids = (await getRoleIds()) ?? [];
     addDialog({
       title: `分配 ${row.username} 用户的角色`,
       props: {
@@ -532,7 +529,7 @@ export function useUser(tableRef: Ref) {
           username: row?.username ?? "",
           nickname: row?.nickname ?? "",
           roleOptions: roleOptions.value ?? [],
-          ids
+          roleName: row?.roleName ?? ""
         }
       },
       width: "400px",
@@ -543,9 +540,26 @@ export function useUser(tableRef: Ref) {
       contentRenderer: () => h(roleForm),
       beforeSure: (done, { options }) => {
         const curData = options.props.formInline as RoleFormItemProps;
-        console.log("curIds", curData.ids);
-        // 根据实际业务使用curData.ids和row里的某些字段去调用修改角色接口即可
-        done(); // 关闭弹框
+        console.log("curIds", curData.roleName);
+        updateUsers({
+          users: [
+            {
+              id: row.id,
+              roleName: curData.roleName
+            }
+          ]
+        } as UpdateUsersRequest)
+          .then(() => {
+            message(`已成功分配 ${row.username} 用户角色`, {
+              type: "success"
+            });
+            done(); // 关闭弹框
+          })
+          .catch(err => {
+            message(`分配 ${row.username} 用户角色失败 ${err}`, {
+              type: "error"
+            });
+          });
       }
     });
   }

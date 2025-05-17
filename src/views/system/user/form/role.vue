@@ -8,7 +8,7 @@ const props = withDefaults(defineProps<RoleFormProps>(), {
     username: "",
     nickname: "",
     roleOptions: [],
-    ids: []
+    roleName: ""
   })
 });
 
@@ -31,16 +31,15 @@ const newFormInline = ref(props.formInline);
       <re-col>
         <el-form-item label="角色列表" prop="ids">
           <el-select
-            v-model="newFormInline.ids"
+            v-model="newFormInline.roleName"
             placeholder="请选择"
             class="w-full"
             clearable
-            multiple
           >
             <el-option
               v-for="(item, index) in newFormInline.roleOptions"
               :key="index"
-              :value="item.id"
+              :value="item.name"
               :label="item.name"
             >
               {{ item.name }}
