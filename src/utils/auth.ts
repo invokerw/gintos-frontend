@@ -95,8 +95,8 @@ export function setToken(data: DataInfo<number>) {
   if (data.user) {
     setUserKey({
       avatar: data.user.avatar ?? "",
-      username: data.user.userName,
-      nickname: data?.user.nickName ?? "",
+      username: data.user.username,
+      nickname: data?.user.nickname ?? "",
       roles: data.user.roles ?? [],
       permissions: data.permissions ?? []
     });

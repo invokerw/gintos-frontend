@@ -22,7 +22,8 @@ import {
   getRoleList,
   getUserCount,
   createUser,
-  updateUsers
+  updateUsers,
+  deleteUsers
 } from "@/api/admin";
 import {
   ElForm,
@@ -33,11 +34,13 @@ import {
 } from "element-plus";
 import { type Ref, h, ref, watch, computed, reactive, onMounted } from "vue";
 import type {
+  DeleteUsersRequest,
   GetUserListRequest,
   UpdateUsersRequest
 } from "@/api/api/v1/admin/admin";
 import { UserStatus } from "@/api/api/v1/common/user";
 import { authorityMap, sexMap, statusMap } from "./rule";
+import { useUserStoreHook } from "@/store/modules/user";
 
 export function useUser(tableRef: Ref) {
   const form = reactive({
@@ -256,8 +259,23 @@ export function useUser(tableRef: Ref) {
   }
 
   function handleDelete(row) {
-    message(`您删除了用户编号为${row.id}的这条数据`, { type: "success" });
-    onSearch();
+    const myUsername = useUserStoreHook().username;
+    if (row.username === myUsername) {
+      message("不能删除自己", { type: "error" });
+      return;
+    }
+    deleteUsers({
+      names: [row.username]
+    } as DeleteUsersRequest)
+      .then(() => {
+        message(`您删除了用户${row.username}这条数据`, { type: "success" });
+        onSearch();
+      })
+      .catch(err => {
+        message(`删除用户${row.username}失败 ${err}`, {
+          type: "error"
+        });
+      });
   }
 
   function handleSizeChange(val: number) {
@@ -286,12 +304,24 @@ export function useUser(tableRef: Ref) {
   function onbatchDel() {
     // 返回当前选中的行
     const curSelected = tableRef.value.getTableRef().getSelectionRows();
-    // 接下来根据实际业务，通过选中行的某项数据，比如下面的id，调用接口进行批量删除
-    message(`已删除用户编号为 ${getKeyList(curSelected, "id")} 的数据`, {
-      type: "success"
-    });
-    tableRef.value.getTableRef().clearSelection();
-    onSearch();
+    const myUsername = useUserStoreHook().username;
+    if (curSelected.some(item => item.username === myUsername)) {
+      message("不能删除自己", { type: "error" });
+      return;
+    }
+    deleteUsers({
+      names: getKeyList(curSelected, "username")
+    } as DeleteUsersRequest)
+      .then(() => {
+        message(`已删除用户 ${getKeyList(curSelected, "username")} 的数据`, {
+          type: "success"
+        });
+        tableRef.value.getTableRef().clearSelection();
+        onSearch();
+      })
+      .catch(err => {
+        message(`批量删除失败 ${err}`, { type: "error" });
+      });
   }
 
   async function onSearch() {
@@ -349,11 +379,10 @@ export function useUser(tableRef: Ref) {
         }
         FormRef.validate(valid => {
           if (valid) {
-            console.log("curData", curData);
+            console.log("openDialog curData", curData);
             // 表单规则校验通过
             if (title === "新增") {
               // 实际开发先调用新增接口，再进行下面操作
-              console.log("新增用户", curData);
               createUser({ user: curData }).then(() => {
                 message("新增用户成功", {
                   type: "success"
@@ -361,9 +390,14 @@ export function useUser(tableRef: Ref) {
                 chores();
               });
             } else {
-              console.log("修改用户", curData);
-              // 实际开发先调用修改接口，再进行下面操作
-              chores();
+              updateUsers({ users: [curData] } as UpdateUsersRequest).then(
+                () => {
+                  message("修改用户成功", {
+                    type: "success"
+                  });
+                  chores();
+                }
+              );
             }
           }
         });
@@ -461,14 +495,26 @@ export function useUser(tableRef: Ref) {
       beforeSure: done => {
         ruleFormRef.value.validate(valid => {
           if (valid) {
-            // 表单规则校验通过
-            message(`已成功重置 ${row.username} 用户的密码`, {
-              type: "success"
-            });
-            console.log(pwdForm.newPwd);
-            // 根据实际业务使用pwdForm.newPwd和row里的某些字段去调用重置用户密码接口即可
-            done(); // 关闭弹框
-            onSearch(); // 刷新表格数据
+            updateUsers({
+              users: [
+                {
+                  id: row.id,
+                  password: pwdForm.newPwd
+                }
+              ]
+            } as UpdateUsersRequest)
+              .then(() => {
+                message(`已成功重置 ${row.username} 用户的密码`, {
+                  type: "success"
+                });
+                done(); // 关闭弹框
+                onSearch(); // 刷新表格数据
+              })
+              .catch(err => {
+                message(`重置 ${row.username} 用户的密码失败 ${err}`, {
+                  type: "error"
+                });
+              });
           }
         });
       }

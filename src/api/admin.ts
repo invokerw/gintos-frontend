@@ -3,6 +3,7 @@ import { baseUrlApi } from "./utils";
 import {
   CreateUserRequest,
   CreateUserResponse,
+  DeleteUsersRequest,
   GetRoleListRequest,
   GetRoleListResponse,
   GetUserListRequest,
@@ -28,6 +29,12 @@ export const updateUsers = (data: UpdateUsersRequest) => {
     { data: UpdateUsersRequest.toJSON(data) },
     UpdateUsersResponse.fromJSON
   );
+};
+
+export const deleteUsers = (data: DeleteUsersRequest) => {
+  return http.request2("post", baseUrlApi("/api/v1/admin/delete_users"), {
+    data: DeleteUsersRequest.toJSON(data)
+  });
 };
 
 export const getUserList = (data?: GetUserListRequest) => {

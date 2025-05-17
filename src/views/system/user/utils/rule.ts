@@ -16,7 +16,7 @@ export const sexOptions = [
   {
     value: UserGender.MALE,
     label: "男",
-    type: "info"
+    type: "success"
   },
   {
     value: UserGender.SECRET,
