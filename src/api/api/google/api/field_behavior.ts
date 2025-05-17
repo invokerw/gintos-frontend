@@ -78,22 +78,22 @@ export function fieldBehaviorFromJSON(object: any): FieldBehavior {
   }
 }
 
-export function fieldBehaviorToJSON(object: FieldBehavior): string {
+export function fieldBehaviorToJSON(object: FieldBehavior): number {
   switch (object) {
     case FieldBehavior.FIELD_BEHAVIOR_UNSPECIFIED:
-      return "FIELD_BEHAVIOR_UNSPECIFIED";
+      return 0;
     case FieldBehavior.OPTIONAL:
-      return "OPTIONAL";
+      return 1;
     case FieldBehavior.REQUIRED:
-      return "REQUIRED";
+      return 2;
     case FieldBehavior.OUTPUT_ONLY:
-      return "OUTPUT_ONLY";
+      return 3;
     case FieldBehavior.INPUT_ONLY:
-      return "INPUT_ONLY";
+      return 4;
     case FieldBehavior.IMMUTABLE:
-      return "IMMUTABLE";
+      return 5;
     case FieldBehavior.UNRECOGNIZED:
     default:
-      return "UNRECOGNIZED";
+      return -1;
   }
 }

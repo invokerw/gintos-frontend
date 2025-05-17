@@ -1,20 +1,40 @@
 import { http } from "@/utils/http";
 import { baseUrlApi } from "./utils";
 import {
-  type GetRoleListRequest,
+  CreateUserRequest,
+  CreateUserResponse,
+  GetRoleListRequest,
   GetRoleListResponse,
-  type GetUserListRequest,
-  GetUserListResponse
+  GetUserListRequest,
+  GetUserListResponse,
+  UpdateUsersRequest,
+  UpdateUsersResponse
 } from "./api/v1/admin/admin";
 import { IntValue } from "./api/v1/common/common";
+
+export const createUser = (data: CreateUserRequest) => {
+  return http.request2(
+    "post",
+    baseUrlApi("/api/v1/admin/create_user"),
+    { data: CreateUserRequest.toJSON(data) },
+    CreateUserResponse.fromJSON
+  );
+};
+
+export const updateUsers = (data: UpdateUsersRequest) => {
+  return http.request2(
+    "post",
+    baseUrlApi("/api/v1/admin/update_users"),
+    { data: UpdateUsersRequest.toJSON(data) },
+    UpdateUsersResponse.fromJSON
+  );
+};
 
 export const getUserList = (data?: GetUserListRequest) => {
   return http.request2<GetUserListResponse>(
     "post",
     baseUrlApi("/api/v1/admin/get_user_list"),
-    {
-      data
-    },
+    { data: GetUserListRequest.toJSON(data) },
     GetUserListResponse.fromJSON
   );
 };
@@ -32,9 +52,8 @@ export const getRoleList = (data?: GetRoleListRequest) => {
   return http.request2<GetRoleListResponse>(
     "post",
     baseUrlApi("/api/v1/admin/get_role_list"),
-    {
-      data
-    },
+    { data: GetRoleListRequest.toJSON(data) },
+
     GetRoleListResponse.fromJSON
   );
 };

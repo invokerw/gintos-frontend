@@ -54,21 +54,21 @@ export function verifyPasswordResultFromJSON(
 
 export function verifyPasswordResultToJSON(
   object: VerifyPasswordResult
-): string {
+): number {
   switch (object) {
     case VerifyPasswordResult.SUCCESS:
-      return "SUCCESS";
+      return 0;
     case VerifyPasswordResult.ACCOUNT_NOT_EXISTS:
-      return "ACCOUNT_NOT_EXISTS";
+      return 1;
     case VerifyPasswordResult.WRONG_PASSWORD:
-      return "WRONG_PASSWORD";
+      return 2;
     case VerifyPasswordResult.FREEZE:
-      return "FREEZE";
+      return 3;
     case VerifyPasswordResult.DELETED:
-      return "DELETED";
+      return 4;
     case VerifyPasswordResult.UNRECOGNIZED:
     default:
-      return "UNRECOGNIZED";
+      return -1;
   }
 }
 
@@ -967,8 +967,8 @@ export const RouteMeta: MessageFns<RouteMeta> = {
       title: isSet(object.title) ? globalThis.String(object.title) : "",
       icon: isSet(object.icon) ? globalThis.String(object.icon) : "",
       rank: isSet(object.rank) ? globalThis.Number(object.rank) : 0,
-      showLink: isSet(object.showLink)
-        ? globalThis.Boolean(object.showLink)
+      showLink: isSet(object.show_link)
+        ? globalThis.Boolean(object.show_link)
         : false,
       roles: globalThis.Array.isArray(object?.roles)
         ? object.roles.map((e: any) => globalThis.String(e))
@@ -991,7 +991,7 @@ export const RouteMeta: MessageFns<RouteMeta> = {
       obj.rank = Math.round(message.rank);
     }
     if (message.showLink !== false) {
-      obj.showLink = message.showLink;
+      obj.show_link = message.showLink;
     }
     if (message.roles?.length) {
       obj.roles = message.roles;

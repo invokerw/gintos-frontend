@@ -20,7 +20,9 @@ import {
   getRoleIds,
   getUserList,
   getRoleList,
-  getUserCount
+  getUserCount,
+  createUser,
+  updateUsers
 } from "@/api/admin";
 import {
   ElForm,
@@ -30,7 +32,10 @@ import {
   ElMessageBox
 } from "element-plus";
 import { type Ref, h, ref, watch, computed, reactive, onMounted } from "vue";
-import type { GetUserListRequest } from "@/api/api/v1/admin/admin";
+import type {
+  GetUserListRequest,
+  UpdateUsersRequest
+} from "@/api/api/v1/admin/admin";
 import { UserStatus } from "@/api/api/v1/common/user";
 import { authorityMap, sexMap, statusMap } from "./rule";
 
@@ -83,12 +88,12 @@ export function useUser(tableRef: Ref) {
     },
     {
       label: "用户名称",
-      prop: "userName",
+      prop: "username",
       minWidth: 130
     },
     {
       label: "用户昵称",
-      prop: "nickName",
+      prop: "nickname",
       minWidth: 130
     },
     {
@@ -158,7 +163,7 @@ export function useUser(tableRef: Ref) {
     {
       label: "创建时间",
       minWidth: 90,
-      prop: "create_time",
+      prop: "createTime",
       formatter: ({ createTime }) =>
         dayjs(createTime * 1000).format("YYYY-MM-DD HH:mm:ss")
     },
@@ -196,9 +201,11 @@ export function useUser(tableRef: Ref) {
   function onStatusChange({ row, index }) {
     ElMessageBox.confirm(
       `确认要<strong>${
-        row.status === 0 ? "停用" : "启用"
+        row.status === UserStatus.OFF
+          ? statusMap[UserStatus.OFF]
+          : statusMap[UserStatus.ON]
       }</strong><strong style='color:var(--el-color-primary)'>${
-        row.userName
+        row.username
       }</strong>用户吗?`,
       "系统提示",
       {
@@ -217,21 +224,30 @@ export function useUser(tableRef: Ref) {
             loading: true
           }
         );
-        setTimeout(() => {
-          switchLoadMap.value[index] = Object.assign(
-            {},
-            switchLoadMap.value[index],
+        updateUsers({
+          users: [
             {
-              loading: false
+              id: row.id,
+              status: row.status
             }
-          );
+          ]
+        } as UpdateUsersRequest).then(() => {
           message("已成功修改用户状态", {
             type: "success"
           });
-        }, 300);
+        });
+        switchLoadMap.value[index] = Object.assign(
+          {},
+          switchLoadMap.value[index],
+          {
+            loading: false
+          }
+        );
       })
       .catch(() => {
-        row.status === 0 ? (row.status = 1) : (row.status = 0);
+        row.status === UserStatus.OFF
+          ? (row.status = UserStatus.ON)
+          : (row.status = UserStatus.OFF);
       });
   }
 
@@ -292,6 +308,8 @@ export function useUser(tableRef: Ref) {
     };
     const data = await getUserList(reqData);
     dataList.value = data.users;
+    console.log("onSearch data", data.users);
+    console.log("onSearch dataList", dataList.value);
 
     setTimeout(() => {
       loading.value = false;
@@ -323,7 +341,7 @@ export function useUser(tableRef: Ref) {
         const FormRef = formRef.value.getRef();
         const curData = options.props.formInline as FormItemProps;
         function chores() {
-          message(`您${title}了用户名称为${curData.userName}的这条数据`, {
+          message(`您${title}了用户名称为${curData.username}的这条数据`, {
             type: "success"
           });
           done(); // 关闭弹框
@@ -335,8 +353,15 @@ export function useUser(tableRef: Ref) {
             // 表单规则校验通过
             if (title === "新增") {
               // 实际开发先调用新增接口，再进行下面操作
-              chores();
+              console.log("新增用户", curData);
+              createUser({ user: curData }).then(() => {
+                message("新增用户成功", {
+                  type: "success"
+                });
+                chores();
+              });
             } else {
+              console.log("修改用户", curData);
               // 实际开发先调用修改接口，再进行下面操作
               chores();
             }

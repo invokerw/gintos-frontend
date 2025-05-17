@@ -29,6 +29,16 @@ export interface GetUserListRequest {
   email?: string | undefined;
 }
 
+export interface CreateUserRequest {
+  /** 用户信息 */
+  user: User | undefined;
+}
+
+export interface CreateUserResponse {
+  /** 用户信息 */
+  user: User | undefined;
+}
+
 export interface GetUserListResponse {
   users: User[];
 }
@@ -244,6 +254,151 @@ export const GetUserListRequest: MessageFns<GetUserListRequest> = {
     message.phone = object.phone ?? undefined;
     message.status = object.status ?? undefined;
     message.email = object.email ?? undefined;
+    return message;
+  }
+};
+
+function createBaseCreateUserRequest(): CreateUserRequest {
+  return { user: undefined };
+}
+
+export const CreateUserRequest: MessageFns<CreateUserRequest> = {
+  encode(
+    message: CreateUserRequest,
+    writer: BinaryWriter = new BinaryWriter()
+  ): BinaryWriter {
+    if (message.user !== undefined) {
+      User.encode(message.user, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateUserRequest {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateUserRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.user = User.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CreateUserRequest {
+    return {
+      user: isSet(object.user) ? User.fromJSON(object.user) : undefined
+    };
+  },
+
+  toJSON(message: CreateUserRequest): unknown {
+    const obj: any = {};
+    if (message.user !== undefined) {
+      obj.user = User.toJSON(message.user);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CreateUserRequest>, I>>(
+    base?: I
+  ): CreateUserRequest {
+    return CreateUserRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CreateUserRequest>, I>>(
+    object: I
+  ): CreateUserRequest {
+    const message = createBaseCreateUserRequest();
+    message.user =
+      object.user !== undefined && object.user !== null
+        ? User.fromPartial(object.user)
+        : undefined;
+    return message;
+  }
+};
+
+function createBaseCreateUserResponse(): CreateUserResponse {
+  return { user: undefined };
+}
+
+export const CreateUserResponse: MessageFns<CreateUserResponse> = {
+  encode(
+    message: CreateUserResponse,
+    writer: BinaryWriter = new BinaryWriter()
+  ): BinaryWriter {
+    if (message.user !== undefined) {
+      User.encode(message.user, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number
+  ): CreateUserResponse {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateUserResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.user = User.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CreateUserResponse {
+    return {
+      user: isSet(object.user) ? User.fromJSON(object.user) : undefined
+    };
+  },
+
+  toJSON(message: CreateUserResponse): unknown {
+    const obj: any = {};
+    if (message.user !== undefined) {
+      obj.user = User.toJSON(message.user);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CreateUserResponse>, I>>(
+    base?: I
+  ): CreateUserResponse {
+    return CreateUserResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CreateUserResponse>, I>>(
+    object: I
+  ): CreateUserResponse {
+    const message = createBaseCreateUserResponse();
+    message.user =
+      object.user !== undefined && object.user !== null
+        ? User.fromPartial(object.user)
+        : undefined;
     return message;
   }
 };
@@ -976,8 +1131,8 @@ export const GetApiInfoListResponse: MessageFns<GetApiInfoListResponse> = {
 
   fromJSON(object: any): GetApiInfoListResponse {
     return {
-      apiTypeMap: isObject(object.apiTypeMap)
-        ? Object.entries(object.apiTypeMap).reduce<{
+      apiTypeMap: isObject(object.api_type_map)
+        ? Object.entries(object.api_type_map).reduce<{
             [key: string]: ApiTypeInfo;
           }>((acc, [key, value]) => {
             acc[key] = ApiTypeInfo.fromJSON(value);
@@ -992,9 +1147,9 @@ export const GetApiInfoListResponse: MessageFns<GetApiInfoListResponse> = {
     if (message.apiTypeMap) {
       const entries = Object.entries(message.apiTypeMap);
       if (entries.length > 0) {
-        obj.apiTypeMap = {};
+        obj.api_type_map = {};
         entries.forEach(([k, v]) => {
-          obj.apiTypeMap[k] = ApiTypeInfo.toJSON(v);
+          obj.api_type_map[k] = ApiTypeInfo.toJSON(v);
         });
       }
     }
@@ -1162,14 +1317,16 @@ export const RoleGetPolicyRequest: MessageFns<RoleGetPolicyRequest> = {
 
   fromJSON(object: any): RoleGetPolicyRequest {
     return {
-      roleName: isSet(object.roleName) ? globalThis.String(object.roleName) : ""
+      roleName: isSet(object.role_name)
+        ? globalThis.String(object.role_name)
+        : ""
     };
   },
 
   toJSON(message: RoleGetPolicyRequest): unknown {
     const obj: any = {};
     if (message.roleName !== "") {
-      obj.roleName = message.roleName;
+      obj.role_name = message.roleName;
     }
     return obj;
   },
@@ -1244,11 +1401,11 @@ export const RoleGetPolicyResponse: MessageFns<RoleGetPolicyResponse> = {
 
   fromJSON(object: any): RoleGetPolicyResponse {
     return {
-      roleName: isSet(object.roleName)
-        ? globalThis.String(object.roleName)
+      roleName: isSet(object.role_name)
+        ? globalThis.String(object.role_name)
         : "",
-      apiInfo: globalThis.Array.isArray(object?.apiInfo)
-        ? object.apiInfo.map((e: any) => ApiInfo.fromJSON(e))
+      apiInfo: globalThis.Array.isArray(object?.api_info)
+        ? object.api_info.map((e: any) => ApiInfo.fromJSON(e))
         : []
     };
   },
@@ -1256,10 +1413,10 @@ export const RoleGetPolicyResponse: MessageFns<RoleGetPolicyResponse> = {
   toJSON(message: RoleGetPolicyResponse): unknown {
     const obj: any = {};
     if (message.roleName !== "") {
-      obj.roleName = message.roleName;
+      obj.role_name = message.roleName;
     }
     if (message.apiInfo?.length) {
-      obj.apiInfo = message.apiInfo.map(e => ApiInfo.toJSON(e));
+      obj.api_info = message.apiInfo.map(e => ApiInfo.toJSON(e));
     }
     return obj;
   },
@@ -1335,11 +1492,11 @@ export const RoleUpdatePolicyRequest: MessageFns<RoleUpdatePolicyRequest> = {
 
   fromJSON(object: any): RoleUpdatePolicyRequest {
     return {
-      roleName: isSet(object.roleName)
-        ? globalThis.String(object.roleName)
+      roleName: isSet(object.role_name)
+        ? globalThis.String(object.role_name)
         : "",
-      apiName: globalThis.Array.isArray(object?.apiName)
-        ? object.apiName.map((e: any) => globalThis.String(e))
+      apiName: globalThis.Array.isArray(object?.api_name)
+        ? object.api_name.map((e: any) => globalThis.String(e))
         : []
     };
   },
@@ -1347,10 +1504,10 @@ export const RoleUpdatePolicyRequest: MessageFns<RoleUpdatePolicyRequest> = {
   toJSON(message: RoleUpdatePolicyRequest): unknown {
     const obj: any = {};
     if (message.roleName !== "") {
-      obj.roleName = message.roleName;
+      obj.role_name = message.roleName;
     }
     if (message.apiName?.length) {
-      obj.apiName = message.apiName;
+      obj.api_name = message.apiName;
     }
     return obj;
   },
@@ -1371,6 +1528,7 @@ export const RoleUpdatePolicyRequest: MessageFns<RoleUpdatePolicyRequest> = {
 };
 
 export interface Admin {
+  CreateUser(request: CreateUserRequest): Promise<CreateUserResponse>;
   GetUserList(request: GetUserListRequest): Promise<GetUserListResponse>;
   UpdateUsers(request: UpdateUsersRequest): Promise<UpdateUsersResponse>;
   DeleteUsers(request: DeleteUsersRequest): Promise<Empty>;
@@ -1391,6 +1549,7 @@ export class AdminClientImpl implements Admin {
   constructor(rpc: Rpc, opts?: { service?: string }) {
     this.service = opts?.service || AdminServiceName;
     this.rpc = rpc;
+    this.CreateUser = this.CreateUser.bind(this);
     this.GetUserList = this.GetUserList.bind(this);
     this.UpdateUsers = this.UpdateUsers.bind(this);
     this.DeleteUsers = this.DeleteUsers.bind(this);
@@ -1403,6 +1562,14 @@ export class AdminClientImpl implements Admin {
     this.RoleGetPolicy = this.RoleGetPolicy.bind(this);
     this.RoleUpdatePolicy = this.RoleUpdatePolicy.bind(this);
   }
+  CreateUser(request: CreateUserRequest): Promise<CreateUserResponse> {
+    const data = CreateUserRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "CreateUser", data);
+    return promise.then(data =>
+      CreateUserResponse.decode(new BinaryReader(data))
+    );
+  }
+
   GetUserList(request: GetUserListRequest): Promise<GetUserListResponse> {
     const data = GetUserListRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "GetUserList", data);

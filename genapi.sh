@@ -14,6 +14,7 @@ protoc --experimental_allow_proto3_optional \
   --proto_path=./api \
   --proto_path=../third_party \
   --ts_proto_out=${CURR}/src/api/api \
+  --ts_proto_opt=snakeToCamel=keys_,useNumericEnumForJson=true \
   $API_PROTO_FILES
 cd $CURR
 echo "Generating proto files in $CURR/src/api/api"

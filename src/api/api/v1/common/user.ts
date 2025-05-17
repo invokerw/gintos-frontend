@@ -43,19 +43,19 @@ export function userAuthorityFromJSON(object: any): UserAuthority {
   }
 }
 
-export function userAuthorityToJSON(object: UserAuthority): string {
+export function userAuthorityToJSON(object: UserAuthority): number {
   switch (object) {
     case UserAuthority.SYS_ADMIN:
-      return "SYS_ADMIN";
+      return 0;
     case UserAuthority.SYS_MANAGER:
-      return "SYS_MANAGER";
+      return 1;
     case UserAuthority.CUSTOMER_USER:
-      return "CUSTOMER_USER";
+      return 2;
     case UserAuthority.GUEST_USER:
-      return "GUEST_USER";
+      return 3;
     case UserAuthority.UNRECOGNIZED:
     default:
-      return "UNRECOGNIZED";
+      return -1;
   }
 }
 
@@ -88,17 +88,17 @@ export function userGenderFromJSON(object: any): UserGender {
   }
 }
 
-export function userGenderToJSON(object: UserGender): string {
+export function userGenderToJSON(object: UserGender): number {
   switch (object) {
     case UserGender.SECRET:
-      return "SECRET";
+      return 0;
     case UserGender.MALE:
-      return "MALE";
+      return 1;
     case UserGender.FEMALE:
-      return "FEMALE";
+      return 2;
     case UserGender.UNRECOGNIZED:
     default:
-      return "UNRECOGNIZED";
+      return -1;
   }
 }
 
@@ -124,15 +124,15 @@ export function userStatusFromJSON(object: any): UserStatus {
   }
 }
 
-export function userStatusToJSON(object: UserStatus): string {
+export function userStatusToJSON(object: UserStatus): number {
   switch (object) {
     case UserStatus.OFF:
-      return "OFF";
+      return 0;
     case UserStatus.ON:
-      return "ON";
+      return 1;
     case UserStatus.UNRECOGNIZED:
     default:
-      return "UNRECOGNIZED";
+      return -1;
   }
 }
 
@@ -147,11 +147,11 @@ export interface User {
   /** 更新者ID */
   updateBy?: number | undefined;
   /** 登录名 */
-  userName?: string | undefined;
+  username?: string | undefined;
   /** 密码 */
   password?: string | undefined;
   /** 昵称 */
-  nickName?: string | undefined;
+  nickname?: string | undefined;
   /** 头像 */
   avatar?: string | undefined;
   /** 邮箱 */
@@ -196,9 +196,9 @@ function createBaseUser(): User {
     roleName: undefined,
     createBy: undefined,
     updateBy: undefined,
-    userName: undefined,
+    username: undefined,
     password: undefined,
-    nickName: undefined,
+    nickname: undefined,
     avatar: undefined,
     email: undefined,
     phone: undefined,
@@ -230,14 +230,14 @@ export const User: MessageFns<User> = {
     if (message.updateBy !== undefined) {
       writer.uint32(64).uint64(message.updateBy);
     }
-    if (message.userName !== undefined) {
-      writer.uint32(82).string(message.userName);
+    if (message.username !== undefined) {
+      writer.uint32(82).string(message.username);
     }
     if (message.password !== undefined) {
       writer.uint32(90).string(message.password);
     }
-    if (message.nickName !== undefined) {
-      writer.uint32(98).string(message.nickName);
+    if (message.nickname !== undefined) {
+      writer.uint32(98).string(message.nickname);
     }
     if (message.avatar !== undefined) {
       writer.uint32(106).string(message.avatar);
@@ -320,7 +320,7 @@ export const User: MessageFns<User> = {
             break;
           }
 
-          message.userName = reader.string();
+          message.username = reader.string();
           continue;
         }
         case 11: {
@@ -336,7 +336,7 @@ export const User: MessageFns<User> = {
             break;
           }
 
-          message.nickName = reader.string();
+          message.nickname = reader.string();
           continue;
         }
         case 13: {
@@ -448,14 +448,14 @@ export const User: MessageFns<User> = {
       updateBy: isSet(object.update_by)
         ? globalThis.Number(object.update_by)
         : undefined,
-      userName: isSet(object.user_name)
-        ? globalThis.String(object.user_name)
+      username: isSet(object.username)
+        ? globalThis.String(object.username)
         : undefined,
       password: isSet(object.password)
         ? globalThis.String(object.password)
         : undefined,
-      nickName: isSet(object.nick_name)
-        ? globalThis.String(object.nick_name)
+      nickname: isSet(object.nickname)
+        ? globalThis.String(object.nickname)
         : undefined,
       avatar: isSet(object.avatar)
         ? globalThis.String(object.avatar)
@@ -503,14 +503,14 @@ export const User: MessageFns<User> = {
     if (message.updateBy !== undefined) {
       obj.update_by = Math.round(message.updateBy);
     }
-    if (message.userName !== undefined) {
-      obj.user_name = message.userName;
+    if (message.username !== undefined) {
+      obj.username = message.username;
     }
     if (message.password !== undefined) {
       obj.password = message.password;
     }
-    if (message.nickName !== undefined) {
-      obj.nick_name = message.nickName;
+    if (message.nickname !== undefined) {
+      obj.nickname = message.nickname;
     }
     if (message.avatar !== undefined) {
       obj.avatar = message.avatar;
@@ -557,9 +557,9 @@ export const User: MessageFns<User> = {
     message.roleName = object.roleName ?? undefined;
     message.createBy = object.createBy ?? undefined;
     message.updateBy = object.updateBy ?? undefined;
-    message.userName = object.userName ?? undefined;
+    message.username = object.username ?? undefined;
     message.password = object.password ?? undefined;
-    message.nickName = object.nickName ?? undefined;
+    message.nickname = object.nickname ?? undefined;
     message.avatar = object.avatar ?? undefined;
     message.email = object.email ?? undefined;
     message.phone = object.phone ?? undefined;
@@ -694,17 +694,17 @@ export const Role: MessageFns<Role> = {
       id: isSet(object.id) ? globalThis.Number(object.id) : undefined,
       name: isSet(object.name) ? globalThis.String(object.name) : undefined,
       desc: isSet(object.desc) ? globalThis.String(object.desc) : undefined,
-      parentId: isSet(object.parentID)
-        ? globalThis.Number(object.parentID)
+      parentId: isSet(object.parent_id)
+        ? globalThis.Number(object.parent_id)
         : undefined,
-      sortId: isSet(object.sortID)
-        ? globalThis.Number(object.sortID)
+      sortId: isSet(object.sort_id)
+        ? globalThis.Number(object.sort_id)
         : undefined,
-      createTime: isSet(object.createTime)
-        ? globalThis.Number(object.createTime)
+      createTime: isSet(object.create_time)
+        ? globalThis.Number(object.create_time)
         : undefined,
-      updateTime: isSet(object.updateTime)
-        ? globalThis.Number(object.updateTime)
+      updateTime: isSet(object.update_time)
+        ? globalThis.Number(object.update_time)
         : undefined
     };
   },
@@ -721,16 +721,16 @@ export const Role: MessageFns<Role> = {
       obj.desc = message.desc;
     }
     if (message.parentId !== undefined) {
-      obj.parentID = Math.round(message.parentId);
+      obj.parent_id = Math.round(message.parentId);
     }
     if (message.sortId !== undefined) {
-      obj.sortID = Math.round(message.sortId);
+      obj.sort_id = Math.round(message.sortId);
     }
     if (message.createTime !== undefined) {
-      obj.createTime = Math.round(message.createTime);
+      obj.create_time = Math.round(message.createTime);
     }
     if (message.updateTime !== undefined) {
-      obj.updateTime = Math.round(message.updateTime);
+      obj.update_time = Math.round(message.updateTime);
     }
     return obj;
   },

@@ -1,9 +1,9 @@
 import { http } from "@/utils/http";
 import { baseUrlApi } from "./utils";
 import {
-  type LoginRequest,
+  LoginRequest,
   LoginResponse,
-  type RefreshTokenRequest,
+  RefreshTokenRequest,
   RefreshTokenResponse
 } from "./api/v1/auth/auth";
 
@@ -13,7 +13,7 @@ export const getLogin = (data?: LoginRequest) => {
     "post",
     baseUrlApi("/api/v1/auth/login"),
     {
-      data
+      data: LoginRequest.toJSON(data)
     },
     LoginResponse.fromJSON
   );
@@ -24,7 +24,7 @@ export const refreshTokenApi = (data?: RefreshTokenRequest) => {
   return http.request2<RefreshTokenResponse>(
     "post",
     baseUrlApi("/api/v1/auth/refresh_token"),
-    { data },
+    { data: RefreshTokenRequest.toJSON(data) },
     RefreshTokenResponse.fromJSON
   );
 };

@@ -54,7 +54,7 @@ defineExpose({ getRef });
       <re-col :value="12" :xs="24" :sm="24">
         <el-form-item label="用户昵称" prop="nickname">
           <el-input
-            v-model="newFormInline.nickName"
+            v-model="newFormInline.nickname"
             clearable
             placeholder="请输入用户昵称"
           />
@@ -63,7 +63,7 @@ defineExpose({ getRef });
       <re-col :value="12" :xs="24" :sm="24">
         <el-form-item label="用户名称" prop="username">
           <el-input
-            v-model="newFormInline.userName"
+            v-model="newFormInline.username"
             clearable
             placeholder="请输入用户名称"
           />

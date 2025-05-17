@@ -419,8 +419,10 @@ export const Http: MessageFns<Http> = {
       rules: globalThis.Array.isArray(object?.rules)
         ? object.rules.map((e: any) => HttpRule.fromJSON(e))
         : [],
-      fullyDecodeReservedExpansion: isSet(object.fullyDecodeReservedExpansion)
-        ? globalThis.Boolean(object.fullyDecodeReservedExpansion)
+      fullyDecodeReservedExpansion: isSet(
+        object.fully_decode_reserved_expansion
+      )
+        ? globalThis.Boolean(object.fully_decode_reserved_expansion)
         : false
     };
   },
@@ -431,7 +433,8 @@ export const Http: MessageFns<Http> = {
       obj.rules = message.rules.map(e => HttpRule.toJSON(e));
     }
     if (message.fullyDecodeReservedExpansion !== false) {
-      obj.fullyDecodeReservedExpansion = message.fullyDecodeReservedExpansion;
+      obj.fully_decode_reserved_expansion =
+        message.fullyDecodeReservedExpansion;
     }
     return obj;
   },
@@ -616,11 +619,11 @@ export const HttpRule: MessageFns<HttpRule> = {
         ? CustomHttpPattern.fromJSON(object.custom)
         : undefined,
       body: isSet(object.body) ? globalThis.String(object.body) : "",
-      responseBody: isSet(object.responseBody)
-        ? globalThis.String(object.responseBody)
+      responseBody: isSet(object.response_body)
+        ? globalThis.String(object.response_body)
         : "",
-      additionalBindings: globalThis.Array.isArray(object?.additionalBindings)
-        ? object.additionalBindings.map((e: any) => HttpRule.fromJSON(e))
+      additionalBindings: globalThis.Array.isArray(object?.additional_bindings)
+        ? object.additional_bindings.map((e: any) => HttpRule.fromJSON(e))
         : []
     };
   },
@@ -652,10 +655,10 @@ export const HttpRule: MessageFns<HttpRule> = {
       obj.body = message.body;
     }
     if (message.responseBody !== "") {
-      obj.responseBody = message.responseBody;
+      obj.response_body = message.responseBody;
     }
     if (message.additionalBindings?.length) {
-      obj.additionalBindings = message.additionalBindings.map(e =>
+      obj.additional_bindings = message.additionalBindings.map(e =>
         HttpRule.toJSON(e)
       );
     }

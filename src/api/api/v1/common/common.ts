@@ -93,7 +93,9 @@ export const PageInfo: MessageFns<PageInfo> = {
   fromJSON(object: any): PageInfo {
     return {
       offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
-      pageSize: isSet(object.pageSize) ? globalThis.Number(object.pageSize) : 0
+      pageSize: isSet(object.page_size)
+        ? globalThis.Number(object.page_size)
+        : 0
     };
   },
 
@@ -103,7 +105,7 @@ export const PageInfo: MessageFns<PageInfo> = {
       obj.offset = Math.round(message.offset);
     }
     if (message.pageSize !== 0) {
-      obj.pageSize = Math.round(message.pageSize);
+      obj.page_size = Math.round(message.pageSize);
     }
     return obj;
   },
@@ -285,8 +287,8 @@ export const ApiTypeInfo: MessageFns<ApiTypeInfo> = {
   fromJSON(object: any): ApiTypeInfo {
     return {
       type: isSet(object.type) ? globalThis.String(object.type) : "",
-      apiInfo: globalThis.Array.isArray(object?.apiInfo)
-        ? object.apiInfo.map((e: any) => ApiInfo.fromJSON(e))
+      apiInfo: globalThis.Array.isArray(object?.api_info)
+        ? object.api_info.map((e: any) => ApiInfo.fromJSON(e))
         : []
     };
   },
@@ -297,7 +299,7 @@ export const ApiTypeInfo: MessageFns<ApiTypeInfo> = {
       obj.type = message.type;
     }
     if (message.apiInfo?.length) {
-      obj.apiInfo = message.apiInfo.map(e => ApiInfo.toJSON(e));
+      obj.api_info = message.apiInfo.map(e => ApiInfo.toJSON(e));
     }
     return obj;
   },

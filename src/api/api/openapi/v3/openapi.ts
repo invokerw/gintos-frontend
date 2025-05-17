@@ -672,8 +672,8 @@ export const AdditionalPropertiesItem: MessageFns<AdditionalPropertiesItem> = {
 
   fromJSON(object: any): AdditionalPropertiesItem {
     return {
-      schemaOrReference: isSet(object.schemaOrReference)
-        ? SchemaOrReference.fromJSON(object.schemaOrReference)
+      schemaOrReference: isSet(object.schema_or_reference)
+        ? SchemaOrReference.fromJSON(object.schema_or_reference)
         : undefined,
       boolean: isSet(object.boolean)
         ? globalThis.Boolean(object.boolean)
@@ -684,7 +684,7 @@ export const AdditionalPropertiesItem: MessageFns<AdditionalPropertiesItem> = {
   toJSON(message: AdditionalPropertiesItem): unknown {
     const obj: any = {};
     if (message.schemaOrReference !== undefined) {
-      obj.schemaOrReference = SchemaOrReference.toJSON(
+      obj.schema_or_reference = SchemaOrReference.toJSON(
         message.schemaOrReference
       );
     }
@@ -947,9 +947,9 @@ export const Callback: MessageFns<Callback> = {
         ? object.path.map((e: any) => NamedPathItem.fromJSON(e))
         : [],
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -960,7 +960,7 @@ export const Callback: MessageFns<Callback> = {
       obj.path = message.path.map(e => NamedPathItem.toJSON(e));
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -1124,9 +1124,9 @@ export const CallbacksOrReferences: MessageFns<CallbacksOrReferences> = {
   fromJSON(object: any): CallbacksOrReferences {
     return {
       additionalProperties: globalThis.Array.isArray(
-        object?.additionalProperties
+        object?.additional_properties
       )
-        ? object.additionalProperties.map((e: any) =>
+        ? object.additional_properties.map((e: any) =>
             NamedCallbackOrReference.fromJSON(e)
           )
         : []
@@ -1136,7 +1136,7 @@ export const CallbacksOrReferences: MessageFns<CallbacksOrReferences> = {
   toJSON(message: CallbacksOrReferences): unknown {
     const obj: any = {};
     if (message.additionalProperties?.length) {
-      obj.additionalProperties = message.additionalProperties.map(e =>
+      obj.additional_properties = message.additionalProperties.map(e =>
         NamedCallbackOrReference.toJSON(e)
       );
     }
@@ -1368,14 +1368,14 @@ export const Components: MessageFns<Components> = {
       examples: isSet(object.examples)
         ? ExamplesOrReferences.fromJSON(object.examples)
         : undefined,
-      requestBodies: isSet(object.requestBodies)
-        ? RequestBodiesOrReferences.fromJSON(object.requestBodies)
+      requestBodies: isSet(object.request_bodies)
+        ? RequestBodiesOrReferences.fromJSON(object.request_bodies)
         : undefined,
       headers: isSet(object.headers)
         ? HeadersOrReferences.fromJSON(object.headers)
         : undefined,
-      securitySchemes: isSet(object.securitySchemes)
-        ? SecuritySchemesOrReferences.fromJSON(object.securitySchemes)
+      securitySchemes: isSet(object.security_schemes)
+        ? SecuritySchemesOrReferences.fromJSON(object.security_schemes)
         : undefined,
       links: isSet(object.links)
         ? LinksOrReferences.fromJSON(object.links)
@@ -1384,9 +1384,9 @@ export const Components: MessageFns<Components> = {
         ? CallbacksOrReferences.fromJSON(object.callbacks)
         : undefined,
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -1406,7 +1406,7 @@ export const Components: MessageFns<Components> = {
       obj.examples = ExamplesOrReferences.toJSON(message.examples);
     }
     if (message.requestBodies !== undefined) {
-      obj.requestBodies = RequestBodiesOrReferences.toJSON(
+      obj.request_bodies = RequestBodiesOrReferences.toJSON(
         message.requestBodies
       );
     }
@@ -1414,7 +1414,7 @@ export const Components: MessageFns<Components> = {
       obj.headers = HeadersOrReferences.toJSON(message.headers);
     }
     if (message.securitySchemes !== undefined) {
-      obj.securitySchemes = SecuritySchemesOrReferences.toJSON(
+      obj.security_schemes = SecuritySchemesOrReferences.toJSON(
         message.securitySchemes
       );
     }
@@ -1425,7 +1425,7 @@ export const Components: MessageFns<Components> = {
       obj.callbacks = CallbacksOrReferences.toJSON(message.callbacks);
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -1562,9 +1562,9 @@ export const Contact: MessageFns<Contact> = {
       url: isSet(object.url) ? globalThis.String(object.url) : "",
       email: isSet(object.email) ? globalThis.String(object.email) : "",
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -1581,7 +1581,7 @@ export const Contact: MessageFns<Contact> = {
       obj.email = message.email;
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -1772,16 +1772,16 @@ export const Discriminator: MessageFns<Discriminator> = {
 
   fromJSON(object: any): Discriminator {
     return {
-      propertyName: isSet(object.propertyName)
-        ? globalThis.String(object.propertyName)
+      propertyName: isSet(object.property_name)
+        ? globalThis.String(object.property_name)
         : "",
       mapping: isSet(object.mapping)
         ? Strings.fromJSON(object.mapping)
         : undefined,
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -1789,13 +1789,13 @@ export const Discriminator: MessageFns<Discriminator> = {
   toJSON(message: Discriminator): unknown {
     const obj: any = {};
     if (message.propertyName !== "") {
-      obj.propertyName = message.propertyName;
+      obj.property_name = message.propertyName;
     }
     if (message.mapping !== undefined) {
       obj.mapping = Strings.toJSON(message.mapping);
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -1984,13 +1984,13 @@ export const Document: MessageFns<Document> = {
       tags: globalThis.Array.isArray(object?.tags)
         ? object.tags.map((e: any) => Tag.fromJSON(e))
         : [],
-      externalDocs: isSet(object.externalDocs)
-        ? ExternalDocs.fromJSON(object.externalDocs)
+      externalDocs: isSet(object.external_docs)
+        ? ExternalDocs.fromJSON(object.external_docs)
         : undefined,
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -2019,10 +2019,10 @@ export const Document: MessageFns<Document> = {
       obj.tags = message.tags.map(e => Tag.toJSON(e));
     }
     if (message.externalDocs !== undefined) {
-      obj.externalDocs = ExternalDocs.toJSON(message.externalDocs);
+      obj.external_docs = ExternalDocs.toJSON(message.externalDocs);
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -2170,8 +2170,8 @@ export const Encoding: MessageFns<Encoding> = {
 
   fromJSON(object: any): Encoding {
     return {
-      contentType: isSet(object.contentType)
-        ? globalThis.String(object.contentType)
+      contentType: isSet(object.content_type)
+        ? globalThis.String(object.content_type)
         : "",
       headers: isSet(object.headers)
         ? HeadersOrReferences.fromJSON(object.headers)
@@ -2180,13 +2180,13 @@ export const Encoding: MessageFns<Encoding> = {
       explode: isSet(object.explode)
         ? globalThis.Boolean(object.explode)
         : false,
-      allowReserved: isSet(object.allowReserved)
-        ? globalThis.Boolean(object.allowReserved)
+      allowReserved: isSet(object.allow_reserved)
+        ? globalThis.Boolean(object.allow_reserved)
         : false,
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -2194,7 +2194,7 @@ export const Encoding: MessageFns<Encoding> = {
   toJSON(message: Encoding): unknown {
     const obj: any = {};
     if (message.contentType !== "") {
-      obj.contentType = message.contentType;
+      obj.content_type = message.contentType;
     }
     if (message.headers !== undefined) {
       obj.headers = HeadersOrReferences.toJSON(message.headers);
@@ -2206,10 +2206,10 @@ export const Encoding: MessageFns<Encoding> = {
       obj.explode = message.explode;
     }
     if (message.allowReserved !== false) {
-      obj.allowReserved = message.allowReserved;
+      obj.allow_reserved = message.allowReserved;
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -2280,9 +2280,11 @@ export const Encodings: MessageFns<Encodings> = {
   fromJSON(object: any): Encodings {
     return {
       additionalProperties: globalThis.Array.isArray(
-        object?.additionalProperties
+        object?.additional_properties
       )
-        ? object.additionalProperties.map((e: any) => NamedEncoding.fromJSON(e))
+        ? object.additional_properties.map((e: any) =>
+            NamedEncoding.fromJSON(e)
+          )
         : []
     };
   },
@@ -2290,7 +2292,7 @@ export const Encodings: MessageFns<Encodings> = {
   toJSON(message: Encodings): unknown {
     const obj: any = {};
     if (message.additionalProperties?.length) {
-      obj.additionalProperties = message.additionalProperties.map(e =>
+      obj.additional_properties = message.additionalProperties.map(e =>
         NamedEncoding.toJSON(e)
       );
     }
@@ -2409,13 +2411,13 @@ export const Example: MessageFns<Example> = {
         ? globalThis.String(object.description)
         : "",
       value: isSet(object.value) ? Any.fromJSON(object.value) : undefined,
-      externalValue: isSet(object.externalValue)
-        ? globalThis.String(object.externalValue)
+      externalValue: isSet(object.external_value)
+        ? globalThis.String(object.external_value)
         : "",
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -2432,10 +2434,10 @@ export const Example: MessageFns<Example> = {
       obj.value = Any.toJSON(message.value);
     }
     if (message.externalValue !== "") {
-      obj.externalValue = message.externalValue;
+      obj.external_value = message.externalValue;
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -2605,9 +2607,9 @@ export const ExamplesOrReferences: MessageFns<ExamplesOrReferences> = {
   fromJSON(object: any): ExamplesOrReferences {
     return {
       additionalProperties: globalThis.Array.isArray(
-        object?.additionalProperties
+        object?.additional_properties
       )
-        ? object.additionalProperties.map((e: any) =>
+        ? object.additional_properties.map((e: any) =>
             NamedExampleOrReference.fromJSON(e)
           )
         : []
@@ -2617,7 +2619,7 @@ export const ExamplesOrReferences: MessageFns<ExamplesOrReferences> = {
   toJSON(message: ExamplesOrReferences): unknown {
     const obj: any = {};
     if (message.additionalProperties?.length) {
-      obj.additionalProperties = message.additionalProperties.map(e =>
+      obj.additional_properties = message.additionalProperties.map(e =>
         NamedExampleOrReference.toJSON(e)
       );
     }
@@ -2686,9 +2688,9 @@ export const Expression: MessageFns<Expression> = {
   fromJSON(object: any): Expression {
     return {
       additionalProperties: globalThis.Array.isArray(
-        object?.additionalProperties
+        object?.additional_properties
       )
-        ? object.additionalProperties.map((e: any) => NamedAny.fromJSON(e))
+        ? object.additional_properties.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -2696,7 +2698,7 @@ export const Expression: MessageFns<Expression> = {
   toJSON(message: Expression): unknown {
     const obj: any = {};
     if (message.additionalProperties?.length) {
-      obj.additionalProperties = message.additionalProperties.map(e =>
+      obj.additional_properties = message.additionalProperties.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -2787,9 +2789,9 @@ export const ExternalDocs: MessageFns<ExternalDocs> = {
         : "",
       url: isSet(object.url) ? globalThis.String(object.url) : "",
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -2803,7 +2805,7 @@ export const ExternalDocs: MessageFns<ExternalDocs> = {
       obj.url = message.url;
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -3020,15 +3022,15 @@ export const Header: MessageFns<Header> = {
       deprecated: isSet(object.deprecated)
         ? globalThis.Boolean(object.deprecated)
         : false,
-      allowEmptyValue: isSet(object.allowEmptyValue)
-        ? globalThis.Boolean(object.allowEmptyValue)
+      allowEmptyValue: isSet(object.allow_empty_value)
+        ? globalThis.Boolean(object.allow_empty_value)
         : false,
       style: isSet(object.style) ? globalThis.String(object.style) : "",
       explode: isSet(object.explode)
         ? globalThis.Boolean(object.explode)
         : false,
-      allowReserved: isSet(object.allowReserved)
-        ? globalThis.Boolean(object.allowReserved)
+      allowReserved: isSet(object.allow_reserved)
+        ? globalThis.Boolean(object.allow_reserved)
         : false,
       schema: isSet(object.schema)
         ? SchemaOrReference.fromJSON(object.schema)
@@ -3041,9 +3043,9 @@ export const Header: MessageFns<Header> = {
         ? MediaTypes.fromJSON(object.content)
         : undefined,
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -3060,7 +3062,7 @@ export const Header: MessageFns<Header> = {
       obj.deprecated = message.deprecated;
     }
     if (message.allowEmptyValue !== false) {
-      obj.allowEmptyValue = message.allowEmptyValue;
+      obj.allow_empty_value = message.allowEmptyValue;
     }
     if (message.style !== "") {
       obj.style = message.style;
@@ -3069,7 +3071,7 @@ export const Header: MessageFns<Header> = {
       obj.explode = message.explode;
     }
     if (message.allowReserved !== false) {
-      obj.allowReserved = message.allowReserved;
+      obj.allow_reserved = message.allowReserved;
     }
     if (message.schema !== undefined) {
       obj.schema = SchemaOrReference.toJSON(message.schema);
@@ -3084,7 +3086,7 @@ export const Header: MessageFns<Header> = {
       obj.content = MediaTypes.toJSON(message.content);
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -3265,9 +3267,9 @@ export const HeadersOrReferences: MessageFns<HeadersOrReferences> = {
   fromJSON(object: any): HeadersOrReferences {
     return {
       additionalProperties: globalThis.Array.isArray(
-        object?.additionalProperties
+        object?.additional_properties
       )
-        ? object.additionalProperties.map((e: any) =>
+        ? object.additional_properties.map((e: any) =>
             NamedHeaderOrReference.fromJSON(e)
           )
         : []
@@ -3277,7 +3279,7 @@ export const HeadersOrReferences: MessageFns<HeadersOrReferences> = {
   toJSON(message: HeadersOrReferences): unknown {
     const obj: any = {};
     if (message.additionalProperties?.length) {
-      obj.additionalProperties = message.additionalProperties.map(e =>
+      obj.additional_properties = message.additionalProperties.map(e =>
         NamedHeaderOrReference.toJSON(e)
       );
     }
@@ -3435,8 +3437,8 @@ export const Info: MessageFns<Info> = {
       description: isSet(object.description)
         ? globalThis.String(object.description)
         : "",
-      termsOfService: isSet(object.termsOfService)
-        ? globalThis.String(object.termsOfService)
+      termsOfService: isSet(object.terms_of_service)
+        ? globalThis.String(object.terms_of_service)
         : "",
       contact: isSet(object.contact)
         ? Contact.fromJSON(object.contact)
@@ -3446,9 +3448,9 @@ export const Info: MessageFns<Info> = {
         : undefined,
       version: isSet(object.version) ? globalThis.String(object.version) : "",
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : [],
       summary: isSet(object.summary) ? globalThis.String(object.summary) : ""
     };
@@ -3463,7 +3465,7 @@ export const Info: MessageFns<Info> = {
       obj.description = message.description;
     }
     if (message.termsOfService !== "") {
-      obj.termsOfService = message.termsOfService;
+      obj.terms_of_service = message.termsOfService;
     }
     if (message.contact !== undefined) {
       obj.contact = Contact.toJSON(message.contact);
@@ -3475,7 +3477,7 @@ export const Info: MessageFns<Info> = {
       obj.version = message.version;
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -3553,8 +3555,8 @@ export const ItemsItem: MessageFns<ItemsItem> = {
 
   fromJSON(object: any): ItemsItem {
     return {
-      schemaOrReference: globalThis.Array.isArray(object?.schemaOrReference)
-        ? object.schemaOrReference.map((e: any) =>
+      schemaOrReference: globalThis.Array.isArray(object?.schema_or_reference)
+        ? object.schema_or_reference.map((e: any) =>
             SchemaOrReference.fromJSON(e)
           )
         : []
@@ -3564,7 +3566,7 @@ export const ItemsItem: MessageFns<ItemsItem> = {
   toJSON(message: ItemsItem): unknown {
     const obj: any = {};
     if (message.schemaOrReference?.length) {
-      obj.schemaOrReference = message.schemaOrReference.map(e =>
+      obj.schema_or_reference = message.schemaOrReference.map(e =>
         SchemaOrReference.toJSON(e)
       );
     }
@@ -3654,9 +3656,9 @@ export const License: MessageFns<License> = {
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       url: isSet(object.url) ? globalThis.String(object.url) : "",
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -3670,7 +3672,7 @@ export const License: MessageFns<License> = {
       obj.url = message.url;
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -3814,26 +3816,26 @@ export const Link: MessageFns<Link> = {
 
   fromJSON(object: any): Link {
     return {
-      operationRef: isSet(object.operationRef)
-        ? globalThis.String(object.operationRef)
+      operationRef: isSet(object.operation_ref)
+        ? globalThis.String(object.operation_ref)
         : "",
-      operationId: isSet(object.operationId)
-        ? globalThis.String(object.operationId)
+      operationId: isSet(object.operation_id)
+        ? globalThis.String(object.operation_id)
         : "",
       parameters: isSet(object.parameters)
         ? AnyOrExpression.fromJSON(object.parameters)
         : undefined,
-      requestBody: isSet(object.requestBody)
-        ? AnyOrExpression.fromJSON(object.requestBody)
+      requestBody: isSet(object.request_body)
+        ? AnyOrExpression.fromJSON(object.request_body)
         : undefined,
       description: isSet(object.description)
         ? globalThis.String(object.description)
         : "",
       server: isSet(object.server) ? Server.fromJSON(object.server) : undefined,
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -3841,16 +3843,16 @@ export const Link: MessageFns<Link> = {
   toJSON(message: Link): unknown {
     const obj: any = {};
     if (message.operationRef !== "") {
-      obj.operationRef = message.operationRef;
+      obj.operation_ref = message.operationRef;
     }
     if (message.operationId !== "") {
-      obj.operationId = message.operationId;
+      obj.operation_id = message.operationId;
     }
     if (message.parameters !== undefined) {
       obj.parameters = AnyOrExpression.toJSON(message.parameters);
     }
     if (message.requestBody !== undefined) {
-      obj.requestBody = AnyOrExpression.toJSON(message.requestBody);
+      obj.request_body = AnyOrExpression.toJSON(message.requestBody);
     }
     if (message.description !== "") {
       obj.description = message.description;
@@ -3859,7 +3861,7 @@ export const Link: MessageFns<Link> = {
       obj.server = Server.toJSON(message.server);
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -4029,9 +4031,9 @@ export const LinksOrReferences: MessageFns<LinksOrReferences> = {
   fromJSON(object: any): LinksOrReferences {
     return {
       additionalProperties: globalThis.Array.isArray(
-        object?.additionalProperties
+        object?.additional_properties
       )
-        ? object.additionalProperties.map((e: any) =>
+        ? object.additional_properties.map((e: any) =>
             NamedLinkOrReference.fromJSON(e)
           )
         : []
@@ -4041,7 +4043,7 @@ export const LinksOrReferences: MessageFns<LinksOrReferences> = {
   toJSON(message: LinksOrReferences): unknown {
     const obj: any = {};
     if (message.additionalProperties?.length) {
-      obj.additionalProperties = message.additionalProperties.map(e =>
+      obj.additional_properties = message.additionalProperties.map(e =>
         NamedLinkOrReference.toJSON(e)
       );
     }
@@ -4176,9 +4178,9 @@ export const MediaType: MessageFns<MediaType> = {
         ? Encodings.fromJSON(object.encoding)
         : undefined,
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -4198,7 +4200,7 @@ export const MediaType: MessageFns<MediaType> = {
       obj.encoding = Encodings.toJSON(message.encoding);
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -4279,9 +4281,9 @@ export const MediaTypes: MessageFns<MediaTypes> = {
   fromJSON(object: any): MediaTypes {
     return {
       additionalProperties: globalThis.Array.isArray(
-        object?.additionalProperties
+        object?.additional_properties
       )
-        ? object.additionalProperties.map((e: any) =>
+        ? object.additional_properties.map((e: any) =>
             NamedMediaType.fromJSON(e)
           )
         : []
@@ -4291,7 +4293,7 @@ export const MediaTypes: MessageFns<MediaTypes> = {
   toJSON(message: MediaTypes): unknown {
     const obj: any = {};
     if (message.additionalProperties?.length) {
-      obj.additionalProperties = message.additionalProperties.map(e =>
+      obj.additional_properties = message.additionalProperties.map(e =>
         NamedMediaType.toJSON(e)
       );
     }
@@ -5868,22 +5870,22 @@ export const OauthFlow: MessageFns<OauthFlow> = {
 
   fromJSON(object: any): OauthFlow {
     return {
-      authorizationUrl: isSet(object.authorizationUrl)
-        ? globalThis.String(object.authorizationUrl)
+      authorizationUrl: isSet(object.authorization_url)
+        ? globalThis.String(object.authorization_url)
         : "",
-      tokenUrl: isSet(object.tokenUrl)
-        ? globalThis.String(object.tokenUrl)
+      tokenUrl: isSet(object.token_url)
+        ? globalThis.String(object.token_url)
         : "",
-      refreshUrl: isSet(object.refreshUrl)
-        ? globalThis.String(object.refreshUrl)
+      refreshUrl: isSet(object.refresh_url)
+        ? globalThis.String(object.refresh_url)
         : "",
       scopes: isSet(object.scopes)
         ? Strings.fromJSON(object.scopes)
         : undefined,
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -5891,19 +5893,19 @@ export const OauthFlow: MessageFns<OauthFlow> = {
   toJSON(message: OauthFlow): unknown {
     const obj: any = {};
     if (message.authorizationUrl !== "") {
-      obj.authorizationUrl = message.authorizationUrl;
+      obj.authorization_url = message.authorizationUrl;
     }
     if (message.tokenUrl !== "") {
-      obj.tokenUrl = message.tokenUrl;
+      obj.token_url = message.tokenUrl;
     }
     if (message.refreshUrl !== "") {
-      obj.refreshUrl = message.refreshUrl;
+      obj.refresh_url = message.refreshUrl;
     }
     if (message.scopes !== undefined) {
       obj.scopes = Strings.toJSON(message.scopes);
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -6036,16 +6038,16 @@ export const OauthFlows: MessageFns<OauthFlows> = {
       password: isSet(object.password)
         ? OauthFlow.fromJSON(object.password)
         : undefined,
-      clientCredentials: isSet(object.clientCredentials)
-        ? OauthFlow.fromJSON(object.clientCredentials)
+      clientCredentials: isSet(object.client_credentials)
+        ? OauthFlow.fromJSON(object.client_credentials)
         : undefined,
-      authorizationCode: isSet(object.authorizationCode)
-        ? OauthFlow.fromJSON(object.authorizationCode)
+      authorizationCode: isSet(object.authorization_code)
+        ? OauthFlow.fromJSON(object.authorization_code)
         : undefined,
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -6059,13 +6061,13 @@ export const OauthFlows: MessageFns<OauthFlows> = {
       obj.password = OauthFlow.toJSON(message.password);
     }
     if (message.clientCredentials !== undefined) {
-      obj.clientCredentials = OauthFlow.toJSON(message.clientCredentials);
+      obj.client_credentials = OauthFlow.toJSON(message.clientCredentials);
     }
     if (message.authorizationCode !== undefined) {
-      obj.authorizationCode = OauthFlow.toJSON(message.authorizationCode);
+      obj.authorization_code = OauthFlow.toJSON(message.authorizationCode);
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -6148,9 +6150,9 @@ export const Object: MessageFns<Object> = {
   fromJSON(object: any): Object {
     return {
       additionalProperties: globalThis.Array.isArray(
-        object?.additionalProperties
+        object?.additional_properties
       )
-        ? object.additionalProperties.map((e: any) => NamedAny.fromJSON(e))
+        ? object.additional_properties.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -6158,7 +6160,7 @@ export const Object: MessageFns<Object> = {
   toJSON(message: Object): unknown {
     const obj: any = {};
     if (message.additionalProperties?.length) {
-      obj.additionalProperties = message.additionalProperties.map(e =>
+      obj.additional_properties = message.additionalProperties.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -6392,17 +6394,17 @@ export const Operation: MessageFns<Operation> = {
       description: isSet(object.description)
         ? globalThis.String(object.description)
         : "",
-      externalDocs: isSet(object.externalDocs)
-        ? ExternalDocs.fromJSON(object.externalDocs)
+      externalDocs: isSet(object.external_docs)
+        ? ExternalDocs.fromJSON(object.external_docs)
         : undefined,
-      operationId: isSet(object.operationId)
-        ? globalThis.String(object.operationId)
+      operationId: isSet(object.operation_id)
+        ? globalThis.String(object.operation_id)
         : "",
       parameters: globalThis.Array.isArray(object?.parameters)
         ? object.parameters.map((e: any) => ParameterOrReference.fromJSON(e))
         : [],
-      requestBody: isSet(object.requestBody)
-        ? RequestBodyOrReference.fromJSON(object.requestBody)
+      requestBody: isSet(object.request_body)
+        ? RequestBodyOrReference.fromJSON(object.request_body)
         : undefined,
       responses: isSet(object.responses)
         ? Responses.fromJSON(object.responses)
@@ -6420,9 +6422,9 @@ export const Operation: MessageFns<Operation> = {
         ? object.servers.map((e: any) => Server.fromJSON(e))
         : [],
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -6439,10 +6441,10 @@ export const Operation: MessageFns<Operation> = {
       obj.description = message.description;
     }
     if (message.externalDocs !== undefined) {
-      obj.externalDocs = ExternalDocs.toJSON(message.externalDocs);
+      obj.external_docs = ExternalDocs.toJSON(message.externalDocs);
     }
     if (message.operationId !== "") {
-      obj.operationId = message.operationId;
+      obj.operation_id = message.operationId;
     }
     if (message.parameters?.length) {
       obj.parameters = message.parameters.map(e =>
@@ -6450,7 +6452,7 @@ export const Operation: MessageFns<Operation> = {
       );
     }
     if (message.requestBody !== undefined) {
-      obj.requestBody = RequestBodyOrReference.toJSON(message.requestBody);
+      obj.request_body = RequestBodyOrReference.toJSON(message.requestBody);
     }
     if (message.responses !== undefined) {
       obj.responses = Responses.toJSON(message.responses);
@@ -6468,7 +6470,7 @@ export const Operation: MessageFns<Operation> = {
       obj.servers = message.servers.map(e => Server.toJSON(e));
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -6733,15 +6735,15 @@ export const Parameter: MessageFns<Parameter> = {
       deprecated: isSet(object.deprecated)
         ? globalThis.Boolean(object.deprecated)
         : false,
-      allowEmptyValue: isSet(object.allowEmptyValue)
-        ? globalThis.Boolean(object.allowEmptyValue)
+      allowEmptyValue: isSet(object.allow_empty_value)
+        ? globalThis.Boolean(object.allow_empty_value)
         : false,
       style: isSet(object.style) ? globalThis.String(object.style) : "",
       explode: isSet(object.explode)
         ? globalThis.Boolean(object.explode)
         : false,
-      allowReserved: isSet(object.allowReserved)
-        ? globalThis.Boolean(object.allowReserved)
+      allowReserved: isSet(object.allow_reserved)
+        ? globalThis.Boolean(object.allow_reserved)
         : false,
       schema: isSet(object.schema)
         ? SchemaOrReference.fromJSON(object.schema)
@@ -6754,9 +6756,9 @@ export const Parameter: MessageFns<Parameter> = {
         ? MediaTypes.fromJSON(object.content)
         : undefined,
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -6779,7 +6781,7 @@ export const Parameter: MessageFns<Parameter> = {
       obj.deprecated = message.deprecated;
     }
     if (message.allowEmptyValue !== false) {
-      obj.allowEmptyValue = message.allowEmptyValue;
+      obj.allow_empty_value = message.allowEmptyValue;
     }
     if (message.style !== "") {
       obj.style = message.style;
@@ -6788,7 +6790,7 @@ export const Parameter: MessageFns<Parameter> = {
       obj.explode = message.explode;
     }
     if (message.allowReserved !== false) {
-      obj.allowReserved = message.allowReserved;
+      obj.allow_reserved = message.allowReserved;
     }
     if (message.schema !== undefined) {
       obj.schema = SchemaOrReference.toJSON(message.schema);
@@ -6803,7 +6805,7 @@ export const Parameter: MessageFns<Parameter> = {
       obj.content = MediaTypes.toJSON(message.content);
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -6993,9 +6995,9 @@ export const ParametersOrReferences: MessageFns<ParametersOrReferences> = {
   fromJSON(object: any): ParametersOrReferences {
     return {
       additionalProperties: globalThis.Array.isArray(
-        object?.additionalProperties
+        object?.additional_properties
       )
-        ? object.additionalProperties.map((e: any) =>
+        ? object.additional_properties.map((e: any) =>
             NamedParameterOrReference.fromJSON(e)
           )
         : []
@@ -7005,7 +7007,7 @@ export const ParametersOrReferences: MessageFns<ParametersOrReferences> = {
   toJSON(message: ParametersOrReferences): unknown {
     const obj: any = {};
     if (message.additionalProperties?.length) {
-      obj.additionalProperties = message.additionalProperties.map(e =>
+      obj.additional_properties = message.additionalProperties.map(e =>
         NamedParameterOrReference.toJSON(e)
       );
     }
@@ -7233,7 +7235,7 @@ export const PathItem: MessageFns<PathItem> = {
 
   fromJSON(object: any): PathItem {
     return {
-      Ref: isSet(object.Ref) ? globalThis.String(object.Ref) : "",
+      Ref: isSet(object._ref) ? globalThis.String(object._ref) : "",
       summary: isSet(object.summary) ? globalThis.String(object.summary) : "",
       description: isSet(object.description)
         ? globalThis.String(object.description)
@@ -7257,9 +7259,9 @@ export const PathItem: MessageFns<PathItem> = {
         ? object.parameters.map((e: any) => ParameterOrReference.fromJSON(e))
         : [],
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -7267,7 +7269,7 @@ export const PathItem: MessageFns<PathItem> = {
   toJSON(message: PathItem): unknown {
     const obj: any = {};
     if (message.Ref !== "") {
-      obj.Ref = message.Ref;
+      obj._ref = message.Ref;
     }
     if (message.summary !== "") {
       obj.summary = message.summary;
@@ -7308,7 +7310,7 @@ export const PathItem: MessageFns<PathItem> = {
       );
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -7423,9 +7425,9 @@ export const Paths: MessageFns<Paths> = {
         ? object.path.map((e: any) => NamedPathItem.fromJSON(e))
         : [],
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -7436,7 +7438,7 @@ export const Paths: MessageFns<Paths> = {
       obj.path = message.path.map(e => NamedPathItem.toJSON(e));
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -7500,9 +7502,9 @@ export const Properties: MessageFns<Properties> = {
   fromJSON(object: any): Properties {
     return {
       additionalProperties: globalThis.Array.isArray(
-        object?.additionalProperties
+        object?.additional_properties
       )
-        ? object.additionalProperties.map((e: any) =>
+        ? object.additional_properties.map((e: any) =>
             NamedSchemaOrReference.fromJSON(e)
           )
         : []
@@ -7512,7 +7514,7 @@ export const Properties: MessageFns<Properties> = {
   toJSON(message: Properties): unknown {
     const obj: any = {};
     if (message.additionalProperties?.length) {
-      obj.additionalProperties = message.additionalProperties.map(e =>
+      obj.additional_properties = message.additionalProperties.map(e =>
         NamedSchemaOrReference.toJSON(e)
       );
     }
@@ -7598,7 +7600,7 @@ export const Reference: MessageFns<Reference> = {
 
   fromJSON(object: any): Reference {
     return {
-      Ref: isSet(object.Ref) ? globalThis.String(object.Ref) : "",
+      Ref: isSet(object._ref) ? globalThis.String(object._ref) : "",
       summary: isSet(object.summary) ? globalThis.String(object.summary) : "",
       description: isSet(object.description)
         ? globalThis.String(object.description)
@@ -7609,7 +7611,7 @@ export const Reference: MessageFns<Reference> = {
   toJSON(message: Reference): unknown {
     const obj: any = {};
     if (message.Ref !== "") {
-      obj.Ref = message.Ref;
+      obj._ref = message.Ref;
     }
     if (message.summary !== "") {
       obj.summary = message.summary;
@@ -7683,9 +7685,9 @@ export const RequestBodiesOrReferences: MessageFns<RequestBodiesOrReferences> =
     fromJSON(object: any): RequestBodiesOrReferences {
       return {
         additionalProperties: globalThis.Array.isArray(
-          object?.additionalProperties
+          object?.additional_properties
         )
-          ? object.additionalProperties.map((e: any) =>
+          ? object.additional_properties.map((e: any) =>
               NamedRequestBodyOrReference.fromJSON(e)
             )
           : []
@@ -7695,7 +7697,7 @@ export const RequestBodiesOrReferences: MessageFns<RequestBodiesOrReferences> =
     toJSON(message: RequestBodiesOrReferences): unknown {
       const obj: any = {};
       if (message.additionalProperties?.length) {
-        obj.additionalProperties = message.additionalProperties.map(e =>
+        obj.additional_properties = message.additionalProperties.map(e =>
           NamedRequestBodyOrReference.toJSON(e)
         );
       }
@@ -7811,9 +7813,9 @@ export const RequestBody: MessageFns<RequestBody> = {
         ? globalThis.Boolean(object.required)
         : false,
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -7830,7 +7832,7 @@ export const RequestBody: MessageFns<RequestBody> = {
       obj.required = message.required;
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -7912,8 +7914,8 @@ export const RequestBodyOrReference: MessageFns<RequestBodyOrReference> = {
 
   fromJSON(object: any): RequestBodyOrReference {
     return {
-      requestBody: isSet(object.requestBody)
-        ? RequestBody.fromJSON(object.requestBody)
+      requestBody: isSet(object.request_body)
+        ? RequestBody.fromJSON(object.request_body)
         : undefined,
       reference: isSet(object.reference)
         ? Reference.fromJSON(object.reference)
@@ -7924,7 +7926,7 @@ export const RequestBodyOrReference: MessageFns<RequestBodyOrReference> = {
   toJSON(message: RequestBodyOrReference): unknown {
     const obj: any = {};
     if (message.requestBody !== undefined) {
-      obj.requestBody = RequestBody.toJSON(message.requestBody);
+      obj.request_body = RequestBody.toJSON(message.requestBody);
     }
     if (message.reference !== undefined) {
       obj.reference = Reference.toJSON(message.reference);
@@ -8063,9 +8065,9 @@ export const Response: MessageFns<Response> = {
         ? LinksOrReferences.fromJSON(object.links)
         : undefined,
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -8085,7 +8087,7 @@ export const Response: MessageFns<Response> = {
       obj.links = LinksOrReferences.toJSON(message.links);
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -8291,15 +8293,17 @@ export const Responses: MessageFns<Responses> = {
       default: isSet(object.default)
         ? ResponseOrReference.fromJSON(object.default)
         : undefined,
-      responseOrReference: globalThis.Array.isArray(object?.responseOrReference)
-        ? object.responseOrReference.map((e: any) =>
+      responseOrReference: globalThis.Array.isArray(
+        object?.response_or_reference
+      )
+        ? object.response_or_reference.map((e: any) =>
             NamedResponseOrReference.fromJSON(e)
           )
         : [],
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -8310,12 +8314,12 @@ export const Responses: MessageFns<Responses> = {
       obj.default = ResponseOrReference.toJSON(message.default);
     }
     if (message.responseOrReference?.length) {
-      obj.responseOrReference = message.responseOrReference.map(e =>
+      obj.response_or_reference = message.responseOrReference.map(e =>
         NamedResponseOrReference.toJSON(e)
       );
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -8391,9 +8395,9 @@ export const ResponsesOrReferences: MessageFns<ResponsesOrReferences> = {
   fromJSON(object: any): ResponsesOrReferences {
     return {
       additionalProperties: globalThis.Array.isArray(
-        object?.additionalProperties
+        object?.additional_properties
       )
-        ? object.additionalProperties.map((e: any) =>
+        ? object.additional_properties.map((e: any) =>
             NamedResponseOrReference.fromJSON(e)
           )
         : []
@@ -8403,7 +8407,7 @@ export const ResponsesOrReferences: MessageFns<ResponsesOrReferences> = {
   toJSON(message: ResponsesOrReferences): unknown {
     const obj: any = {};
     if (message.additionalProperties?.length) {
-      obj.additionalProperties = message.additionalProperties.map(e =>
+      obj.additional_properties = message.additionalProperties.map(e =>
         NamedResponseOrReference.toJSON(e)
       );
     }
@@ -8911,49 +8915,53 @@ export const Schema: MessageFns<Schema> = {
       discriminator: isSet(object.discriminator)
         ? Discriminator.fromJSON(object.discriminator)
         : undefined,
-      readOnly: isSet(object.readOnly)
-        ? globalThis.Boolean(object.readOnly)
+      readOnly: isSet(object.read_only)
+        ? globalThis.Boolean(object.read_only)
         : false,
-      writeOnly: isSet(object.writeOnly)
-        ? globalThis.Boolean(object.writeOnly)
+      writeOnly: isSet(object.write_only)
+        ? globalThis.Boolean(object.write_only)
         : false,
       xml: isSet(object.xml) ? Xml.fromJSON(object.xml) : undefined,
-      externalDocs: isSet(object.externalDocs)
-        ? ExternalDocs.fromJSON(object.externalDocs)
+      externalDocs: isSet(object.external_docs)
+        ? ExternalDocs.fromJSON(object.external_docs)
         : undefined,
       example: isSet(object.example) ? Any.fromJSON(object.example) : undefined,
       deprecated: isSet(object.deprecated)
         ? globalThis.Boolean(object.deprecated)
         : false,
       title: isSet(object.title) ? globalThis.String(object.title) : "",
-      multipleOf: isSet(object.multipleOf)
-        ? globalThis.Number(object.multipleOf)
+      multipleOf: isSet(object.multiple_of)
+        ? globalThis.Number(object.multiple_of)
         : 0,
       maximum: isSet(object.maximum) ? globalThis.Number(object.maximum) : 0,
-      exclusiveMaximum: isSet(object.exclusiveMaximum)
-        ? globalThis.Boolean(object.exclusiveMaximum)
+      exclusiveMaximum: isSet(object.exclusive_maximum)
+        ? globalThis.Boolean(object.exclusive_maximum)
         : false,
       minimum: isSet(object.minimum) ? globalThis.Number(object.minimum) : 0,
-      exclusiveMinimum: isSet(object.exclusiveMinimum)
-        ? globalThis.Boolean(object.exclusiveMinimum)
+      exclusiveMinimum: isSet(object.exclusive_minimum)
+        ? globalThis.Boolean(object.exclusive_minimum)
         : false,
-      maxLength: isSet(object.maxLength)
-        ? globalThis.Number(object.maxLength)
+      maxLength: isSet(object.max_length)
+        ? globalThis.Number(object.max_length)
         : 0,
-      minLength: isSet(object.minLength)
-        ? globalThis.Number(object.minLength)
+      minLength: isSet(object.min_length)
+        ? globalThis.Number(object.min_length)
         : 0,
       pattern: isSet(object.pattern) ? globalThis.String(object.pattern) : "",
-      maxItems: isSet(object.maxItems) ? globalThis.Number(object.maxItems) : 0,
-      minItems: isSet(object.minItems) ? globalThis.Number(object.minItems) : 0,
-      uniqueItems: isSet(object.uniqueItems)
-        ? globalThis.Boolean(object.uniqueItems)
-        : false,
-      maxProperties: isSet(object.maxProperties)
-        ? globalThis.Number(object.maxProperties)
+      maxItems: isSet(object.max_items)
+        ? globalThis.Number(object.max_items)
         : 0,
-      minProperties: isSet(object.minProperties)
-        ? globalThis.Number(object.minProperties)
+      minItems: isSet(object.min_items)
+        ? globalThis.Number(object.min_items)
+        : 0,
+      uniqueItems: isSet(object.unique_items)
+        ? globalThis.Boolean(object.unique_items)
+        : false,
+      maxProperties: isSet(object.max_properties)
+        ? globalThis.Number(object.max_properties)
+        : 0,
+      minProperties: isSet(object.min_properties)
+        ? globalThis.Number(object.min_properties)
         : 0,
       required: globalThis.Array.isArray(object?.required)
         ? object.required.map((e: any) => globalThis.String(e))
@@ -8962,22 +8970,22 @@ export const Schema: MessageFns<Schema> = {
         ? object.enum.map((e: any) => Any.fromJSON(e))
         : [],
       type: isSet(object.type) ? globalThis.String(object.type) : "",
-      allOf: globalThis.Array.isArray(object?.allOf)
-        ? object.allOf.map((e: any) => SchemaOrReference.fromJSON(e))
+      allOf: globalThis.Array.isArray(object?.all_of)
+        ? object.all_of.map((e: any) => SchemaOrReference.fromJSON(e))
         : [],
-      oneOf: globalThis.Array.isArray(object?.oneOf)
-        ? object.oneOf.map((e: any) => SchemaOrReference.fromJSON(e))
+      oneOf: globalThis.Array.isArray(object?.one_of)
+        ? object.one_of.map((e: any) => SchemaOrReference.fromJSON(e))
         : [],
-      anyOf: globalThis.Array.isArray(object?.anyOf)
-        ? object.anyOf.map((e: any) => SchemaOrReference.fromJSON(e))
+      anyOf: globalThis.Array.isArray(object?.any_of)
+        ? object.any_of.map((e: any) => SchemaOrReference.fromJSON(e))
         : [],
       not: isSet(object.not) ? Schema.fromJSON(object.not) : undefined,
       items: isSet(object.items) ? ItemsItem.fromJSON(object.items) : undefined,
       properties: isSet(object.properties)
         ? Properties.fromJSON(object.properties)
         : undefined,
-      additionalProperties: isSet(object.additionalProperties)
-        ? AdditionalPropertiesItem.fromJSON(object.additionalProperties)
+      additionalProperties: isSet(object.additional_properties)
+        ? AdditionalPropertiesItem.fromJSON(object.additional_properties)
         : undefined,
       default: isSet(object.default)
         ? DefaultType.fromJSON(object.default)
@@ -8987,9 +8995,9 @@ export const Schema: MessageFns<Schema> = {
         : "",
       format: isSet(object.format) ? globalThis.String(object.format) : "",
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -9003,16 +9011,16 @@ export const Schema: MessageFns<Schema> = {
       obj.discriminator = Discriminator.toJSON(message.discriminator);
     }
     if (message.readOnly !== false) {
-      obj.readOnly = message.readOnly;
+      obj.read_only = message.readOnly;
     }
     if (message.writeOnly !== false) {
-      obj.writeOnly = message.writeOnly;
+      obj.write_only = message.writeOnly;
     }
     if (message.xml !== undefined) {
       obj.xml = Xml.toJSON(message.xml);
     }
     if (message.externalDocs !== undefined) {
-      obj.externalDocs = ExternalDocs.toJSON(message.externalDocs);
+      obj.external_docs = ExternalDocs.toJSON(message.externalDocs);
     }
     if (message.example !== undefined) {
       obj.example = Any.toJSON(message.example);
@@ -9024,43 +9032,43 @@ export const Schema: MessageFns<Schema> = {
       obj.title = message.title;
     }
     if (message.multipleOf !== 0) {
-      obj.multipleOf = message.multipleOf;
+      obj.multiple_of = message.multipleOf;
     }
     if (message.maximum !== 0) {
       obj.maximum = message.maximum;
     }
     if (message.exclusiveMaximum !== false) {
-      obj.exclusiveMaximum = message.exclusiveMaximum;
+      obj.exclusive_maximum = message.exclusiveMaximum;
     }
     if (message.minimum !== 0) {
       obj.minimum = message.minimum;
     }
     if (message.exclusiveMinimum !== false) {
-      obj.exclusiveMinimum = message.exclusiveMinimum;
+      obj.exclusive_minimum = message.exclusiveMinimum;
     }
     if (message.maxLength !== 0) {
-      obj.maxLength = Math.round(message.maxLength);
+      obj.max_length = Math.round(message.maxLength);
     }
     if (message.minLength !== 0) {
-      obj.minLength = Math.round(message.minLength);
+      obj.min_length = Math.round(message.minLength);
     }
     if (message.pattern !== "") {
       obj.pattern = message.pattern;
     }
     if (message.maxItems !== 0) {
-      obj.maxItems = Math.round(message.maxItems);
+      obj.max_items = Math.round(message.maxItems);
     }
     if (message.minItems !== 0) {
-      obj.minItems = Math.round(message.minItems);
+      obj.min_items = Math.round(message.minItems);
     }
     if (message.uniqueItems !== false) {
-      obj.uniqueItems = message.uniqueItems;
+      obj.unique_items = message.uniqueItems;
     }
     if (message.maxProperties !== 0) {
-      obj.maxProperties = Math.round(message.maxProperties);
+      obj.max_properties = Math.round(message.maxProperties);
     }
     if (message.minProperties !== 0) {
-      obj.minProperties = Math.round(message.minProperties);
+      obj.min_properties = Math.round(message.minProperties);
     }
     if (message.required?.length) {
       obj.required = message.required;
@@ -9072,13 +9080,13 @@ export const Schema: MessageFns<Schema> = {
       obj.type = message.type;
     }
     if (message.allOf?.length) {
-      obj.allOf = message.allOf.map(e => SchemaOrReference.toJSON(e));
+      obj.all_of = message.allOf.map(e => SchemaOrReference.toJSON(e));
     }
     if (message.oneOf?.length) {
-      obj.oneOf = message.oneOf.map(e => SchemaOrReference.toJSON(e));
+      obj.one_of = message.oneOf.map(e => SchemaOrReference.toJSON(e));
     }
     if (message.anyOf?.length) {
-      obj.anyOf = message.anyOf.map(e => SchemaOrReference.toJSON(e));
+      obj.any_of = message.anyOf.map(e => SchemaOrReference.toJSON(e));
     }
     if (message.not !== undefined) {
       obj.not = Schema.toJSON(message.not);
@@ -9090,7 +9098,7 @@ export const Schema: MessageFns<Schema> = {
       obj.properties = Properties.toJSON(message.properties);
     }
     if (message.additionalProperties !== undefined) {
-      obj.additionalProperties = AdditionalPropertiesItem.toJSON(
+      obj.additional_properties = AdditionalPropertiesItem.toJSON(
         message.additionalProperties
       );
     }
@@ -9104,7 +9112,7 @@ export const Schema: MessageFns<Schema> = {
       obj.format = message.format;
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -9328,9 +9336,9 @@ export const SchemasOrReferences: MessageFns<SchemasOrReferences> = {
   fromJSON(object: any): SchemasOrReferences {
     return {
       additionalProperties: globalThis.Array.isArray(
-        object?.additionalProperties
+        object?.additional_properties
       )
-        ? object.additionalProperties.map((e: any) =>
+        ? object.additional_properties.map((e: any) =>
             NamedSchemaOrReference.fromJSON(e)
           )
         : []
@@ -9340,7 +9348,7 @@ export const SchemasOrReferences: MessageFns<SchemasOrReferences> = {
   toJSON(message: SchemasOrReferences): unknown {
     const obj: any = {};
     if (message.additionalProperties?.length) {
-      obj.additionalProperties = message.additionalProperties.map(e =>
+      obj.additional_properties = message.additionalProperties.map(e =>
         NamedSchemaOrReference.toJSON(e)
       );
     }
@@ -9412,9 +9420,9 @@ export const SecurityRequirement: MessageFns<SecurityRequirement> = {
   fromJSON(object: any): SecurityRequirement {
     return {
       additionalProperties: globalThis.Array.isArray(
-        object?.additionalProperties
+        object?.additional_properties
       )
-        ? object.additionalProperties.map((e: any) =>
+        ? object.additional_properties.map((e: any) =>
             NamedStringArray.fromJSON(e)
           )
         : []
@@ -9424,7 +9432,7 @@ export const SecurityRequirement: MessageFns<SecurityRequirement> = {
   toJSON(message: SecurityRequirement): unknown {
     const obj: any = {};
     if (message.additionalProperties?.length) {
-      obj.additionalProperties = message.additionalProperties.map(e =>
+      obj.additional_properties = message.additionalProperties.map(e =>
         NamedStringArray.toJSON(e)
       );
     }
@@ -9596,19 +9604,19 @@ export const SecurityScheme: MessageFns<SecurityScheme> = {
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       in: isSet(object.in) ? globalThis.String(object.in) : "",
       scheme: isSet(object.scheme) ? globalThis.String(object.scheme) : "",
-      bearerFormat: isSet(object.bearerFormat)
-        ? globalThis.String(object.bearerFormat)
+      bearerFormat: isSet(object.bearer_format)
+        ? globalThis.String(object.bearer_format)
         : "",
       flows: isSet(object.flows)
         ? OauthFlows.fromJSON(object.flows)
         : undefined,
-      openIdConnectUrl: isSet(object.openIdConnectUrl)
-        ? globalThis.String(object.openIdConnectUrl)
+      openIdConnectUrl: isSet(object.open_id_connect_url)
+        ? globalThis.String(object.open_id_connect_url)
         : "",
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -9631,16 +9639,16 @@ export const SecurityScheme: MessageFns<SecurityScheme> = {
       obj.scheme = message.scheme;
     }
     if (message.bearerFormat !== "") {
-      obj.bearerFormat = message.bearerFormat;
+      obj.bearer_format = message.bearerFormat;
     }
     if (message.flows !== undefined) {
       obj.flows = OauthFlows.toJSON(message.flows);
     }
     if (message.openIdConnectUrl !== "") {
-      obj.openIdConnectUrl = message.openIdConnectUrl;
+      obj.open_id_connect_url = message.openIdConnectUrl;
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -9736,8 +9744,8 @@ export const SecuritySchemeOrReference: MessageFns<SecuritySchemeOrReference> =
 
     fromJSON(object: any): SecuritySchemeOrReference {
       return {
-        securityScheme: isSet(object.securityScheme)
-          ? SecurityScheme.fromJSON(object.securityScheme)
+        securityScheme: isSet(object.security_scheme)
+          ? SecurityScheme.fromJSON(object.security_scheme)
           : undefined,
         reference: isSet(object.reference)
           ? Reference.fromJSON(object.reference)
@@ -9748,7 +9756,7 @@ export const SecuritySchemeOrReference: MessageFns<SecuritySchemeOrReference> =
     toJSON(message: SecuritySchemeOrReference): unknown {
       const obj: any = {};
       if (message.securityScheme !== undefined) {
-        obj.securityScheme = SecurityScheme.toJSON(message.securityScheme);
+        obj.security_scheme = SecurityScheme.toJSON(message.securityScheme);
       }
       if (message.reference !== undefined) {
         obj.reference = Reference.toJSON(message.reference);
@@ -9829,9 +9837,9 @@ export const SecuritySchemesOrReferences: MessageFns<SecuritySchemesOrReferences
     fromJSON(object: any): SecuritySchemesOrReferences {
       return {
         additionalProperties: globalThis.Array.isArray(
-          object?.additionalProperties
+          object?.additional_properties
         )
-          ? object.additionalProperties.map((e: any) =>
+          ? object.additional_properties.map((e: any) =>
               NamedSecuritySchemeOrReference.fromJSON(e)
             )
           : []
@@ -9841,7 +9849,7 @@ export const SecuritySchemesOrReferences: MessageFns<SecuritySchemesOrReferences
     toJSON(message: SecuritySchemesOrReferences): unknown {
       const obj: any = {};
       if (message.additionalProperties?.length) {
-        obj.additionalProperties = message.additionalProperties.map(e =>
+        obj.additional_properties = message.additionalProperties.map(e =>
           NamedSecuritySchemeOrReference.toJSON(e)
         );
       }
@@ -9958,9 +9966,9 @@ export const Server: MessageFns<Server> = {
         ? ServerVariables.fromJSON(object.variables)
         : undefined,
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -9977,7 +9985,7 @@ export const Server: MessageFns<Server> = {
       obj.variables = ServerVariables.toJSON(message.variables);
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -10086,9 +10094,9 @@ export const ServerVariable: MessageFns<ServerVariable> = {
         ? globalThis.String(object.description)
         : "",
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -10105,7 +10113,7 @@ export const ServerVariable: MessageFns<ServerVariable> = {
       obj.description = message.description;
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -10175,9 +10183,9 @@ export const ServerVariables: MessageFns<ServerVariables> = {
   fromJSON(object: any): ServerVariables {
     return {
       additionalProperties: globalThis.Array.isArray(
-        object?.additionalProperties
+        object?.additional_properties
       )
-        ? object.additionalProperties.map((e: any) =>
+        ? object.additional_properties.map((e: any) =>
             NamedServerVariable.fromJSON(e)
           )
         : []
@@ -10187,7 +10195,7 @@ export const ServerVariables: MessageFns<ServerVariables> = {
   toJSON(message: ServerVariables): unknown {
     const obj: any = {};
     if (message.additionalProperties?.length) {
-      obj.additionalProperties = message.additionalProperties.map(e =>
+      obj.additional_properties = message.additionalProperties.map(e =>
         NamedServerVariable.toJSON(e)
       );
     }
@@ -10433,9 +10441,9 @@ export const Strings: MessageFns<Strings> = {
   fromJSON(object: any): Strings {
     return {
       additionalProperties: globalThis.Array.isArray(
-        object?.additionalProperties
+        object?.additional_properties
       )
-        ? object.additionalProperties.map((e: any) => NamedString.fromJSON(e))
+        ? object.additional_properties.map((e: any) => NamedString.fromJSON(e))
         : []
     };
   },
@@ -10443,7 +10451,7 @@ export const Strings: MessageFns<Strings> = {
   toJSON(message: Strings): unknown {
     const obj: any = {};
     if (message.additionalProperties?.length) {
-      obj.additionalProperties = message.additionalProperties.map(e =>
+      obj.additional_properties = message.additionalProperties.map(e =>
         NamedString.toJSON(e)
       );
     }
@@ -10550,13 +10558,13 @@ export const Tag: MessageFns<Tag> = {
       description: isSet(object.description)
         ? globalThis.String(object.description)
         : "",
-      externalDocs: isSet(object.externalDocs)
-        ? ExternalDocs.fromJSON(object.externalDocs)
+      externalDocs: isSet(object.external_docs)
+        ? ExternalDocs.fromJSON(object.external_docs)
         : undefined,
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -10570,10 +10578,10 @@ export const Tag: MessageFns<Tag> = {
       obj.description = message.description;
     }
     if (message.externalDocs !== undefined) {
-      obj.externalDocs = ExternalDocs.toJSON(message.externalDocs);
+      obj.external_docs = ExternalDocs.toJSON(message.externalDocs);
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
@@ -10715,9 +10723,9 @@ export const Xml: MessageFns<Xml> = {
         ? globalThis.Boolean(object.wrapped)
         : false,
       specificationExtension: globalThis.Array.isArray(
-        object?.specificationExtension
+        object?.specification_extension
       )
-        ? object.specificationExtension.map((e: any) => NamedAny.fromJSON(e))
+        ? object.specification_extension.map((e: any) => NamedAny.fromJSON(e))
         : []
     };
   },
@@ -10740,7 +10748,7 @@ export const Xml: MessageFns<Xml> = {
       obj.wrapped = message.wrapped;
     }
     if (message.specificationExtension?.length) {
-      obj.specificationExtension = message.specificationExtension.map(e =>
+      obj.specification_extension = message.specificationExtension.map(e =>
         NamedAny.toJSON(e)
       );
     }
