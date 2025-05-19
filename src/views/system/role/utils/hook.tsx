@@ -1,14 +1,13 @@
 import dayjs from "dayjs";
 import editForm from "../form.vue";
-import { handleTree } from "@/utils/tree";
 import { message } from "@/utils/message";
 import { ElMessageBox } from "element-plus";
 import { usePublicHooks } from "../../hooks";
 import { addDialog } from "@/components/ReDialog";
 import type { FormItemProps } from "../utils/types";
 import type { PaginationProps } from "@pureadmin/table";
-import { getKeyList, deviceDetection } from "@pureadmin/utils";
-import { getRoleList, getRoleMenu, getRoleMenuIds } from "@/api/admin";
+import { deviceDetection } from "@pureadmin/utils";
+import { getRoleList } from "@/api/admin";
 import { type Ref, reactive, ref, onMounted, h, watch } from "vue";
 
 export function useRole(treeRef: Ref) {
@@ -231,8 +230,9 @@ export function useRole(treeRef: Ref) {
     if (id) {
       curRow.value = row;
       isShow.value = true;
-      const { data } = await getRoleMenuIds({ id });
-      treeRef.value.setCheckedKeys(data);
+      // TODO
+      // const { data } = await getRoleMenuIds({ id });
+      // treeRef.value.setCheckedKeys(data);
     } else {
       curRow.value = null;
       isShow.value = false;
@@ -265,14 +265,15 @@ export function useRole(treeRef: Ref) {
   };
 
   const filterMethod = (query: string, node) => {
-    return transformI18n(node.title)!.includes(query);
+    return node.title!.includes(query);
   };
 
   onMounted(async () => {
     onSearch();
-    const { data } = await getRoleMenu();
-    treeIds.value = getKeyList(data, "id");
-    treeData.value = handleTree(data);
+    // TODO
+    // const { data } = await getRoleMenu();
+    // treeIds.value = getKeyList(data, "id");
+    // treeData.value = handleTree(data);
   });
 
   watch(isExpandAll, val => {
@@ -310,7 +311,6 @@ export function useRole(treeRef: Ref) {
     handleSave,
     handleDelete,
     filterMethod,
-    transformI18n,
     onQueryChanged,
     // handleDatabase,
     handleSizeChange,
