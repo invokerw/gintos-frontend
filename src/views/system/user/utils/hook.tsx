@@ -22,7 +22,8 @@ import {
   getUserCount,
   createUser,
   updateUsers,
-  deleteUsers
+  deleteUsers,
+  updateUserAvatar
 } from "@/api/admin";
 import {
   ElForm,
@@ -441,9 +442,16 @@ export function useUser(tableRef: Ref) {
         }),
       beforeSure: done => {
         console.log("裁剪后的图片信息：", avatarInfo.value);
-        // 根据实际业务使用avatarInfo.value和row里的某些字段去调用上传头像接口即可
-        done(); // 关闭弹框
-        onSearch(); // 刷新表格数据
+        updateUserAvatar({
+          id: row.id,
+          avatarData: avatarInfo.value["base64"]
+        }).then(() => {
+          message("上传头像成功", {
+            type: "success"
+          });
+          done(); // 关闭弹框
+          onSearch(); // 刷新表格数据
+        });
       },
       closeCallBack: () => cropRef.value.hidePopover()
     });

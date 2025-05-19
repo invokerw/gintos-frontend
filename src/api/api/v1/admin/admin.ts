@@ -18,6 +18,18 @@ import {
 
 export const protobufPackage = "api.v1.admin";
 
+export interface UpdateUserAvatarRequest {
+  /** 用户ID */
+  id: number;
+  /** 头像数据 */
+  avatarData: string;
+}
+
+export interface UpdateUserAvatarResponse {
+  /** 用户信息 */
+  user: User | undefined;
+}
+
 export interface GetUserListRequest {
   /** 分页信息 */
   page: PageInfo | undefined;
@@ -109,6 +121,169 @@ export interface RoleUpdatePolicyRequest {
   /** 权限名字 */
   apiName: string[];
 }
+
+function createBaseUpdateUserAvatarRequest(): UpdateUserAvatarRequest {
+  return { id: 0, avatarData: "" };
+}
+
+export const UpdateUserAvatarRequest: MessageFns<UpdateUserAvatarRequest> = {
+  encode(
+    message: UpdateUserAvatarRequest,
+    writer: BinaryWriter = new BinaryWriter()
+  ): BinaryWriter {
+    if (message.id !== 0) {
+      writer.uint32(8).uint64(message.id);
+    }
+    if (message.avatarData !== "") {
+      writer.uint32(18).string(message.avatarData);
+    }
+    return writer;
+  },
+
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number
+  ): UpdateUserAvatarRequest {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateUserAvatarRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.id = longToNumber(reader.uint64());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.avatarData = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateUserAvatarRequest {
+    return {
+      id: isSet(object.id) ? globalThis.Number(object.id) : 0,
+      avatarData: isSet(object.avatarData)
+        ? globalThis.String(object.avatarData)
+        : ""
+    };
+  },
+
+  toJSON(message: UpdateUserAvatarRequest): unknown {
+    const obj: any = {};
+    if (message.id !== 0) {
+      obj.id = Math.round(message.id);
+    }
+    if (message.avatarData !== "") {
+      obj.avatarData = message.avatarData;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UpdateUserAvatarRequest>, I>>(
+    base?: I
+  ): UpdateUserAvatarRequest {
+    return UpdateUserAvatarRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UpdateUserAvatarRequest>, I>>(
+    object: I
+  ): UpdateUserAvatarRequest {
+    const message = createBaseUpdateUserAvatarRequest();
+    message.id = object.id ?? 0;
+    message.avatarData = object.avatarData ?? "";
+    return message;
+  }
+};
+
+function createBaseUpdateUserAvatarResponse(): UpdateUserAvatarResponse {
+  return { user: undefined };
+}
+
+export const UpdateUserAvatarResponse: MessageFns<UpdateUserAvatarResponse> = {
+  encode(
+    message: UpdateUserAvatarResponse,
+    writer: BinaryWriter = new BinaryWriter()
+  ): BinaryWriter {
+    if (message.user !== undefined) {
+      User.encode(message.user, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number
+  ): UpdateUserAvatarResponse {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateUserAvatarResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.user = User.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateUserAvatarResponse {
+    return {
+      user: isSet(object.user) ? User.fromJSON(object.user) : undefined
+    };
+  },
+
+  toJSON(message: UpdateUserAvatarResponse): unknown {
+    const obj: any = {};
+    if (message.user !== undefined) {
+      obj.user = User.toJSON(message.user);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UpdateUserAvatarResponse>, I>>(
+    base?: I
+  ): UpdateUserAvatarResponse {
+    return UpdateUserAvatarResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UpdateUserAvatarResponse>, I>>(
+    object: I
+  ): UpdateUserAvatarResponse {
+    const message = createBaseUpdateUserAvatarResponse();
+    message.user =
+      object.user !== undefined && object.user !== null
+        ? User.fromPartial(object.user)
+        : undefined;
+    return message;
+  }
+};
 
 function createBaseGetUserListRequest(): GetUserListRequest {
   return {
@@ -1540,6 +1715,9 @@ export interface Admin {
   GetApiInfoList(request: Empty): Promise<GetApiInfoListResponse>;
   RoleGetPolicy(request: RoleGetPolicyRequest): Promise<RoleGetPolicyResponse>;
   RoleUpdatePolicy(request: RoleUpdatePolicyRequest): Promise<Empty>;
+  UpdateUserAvatar(
+    request: UpdateUserAvatarRequest
+  ): Promise<UpdateUserAvatarResponse>;
 }
 
 export const AdminServiceName = "api.v1.admin.Admin";
@@ -1561,6 +1739,7 @@ export class AdminClientImpl implements Admin {
     this.GetApiInfoList = this.GetApiInfoList.bind(this);
     this.RoleGetPolicy = this.RoleGetPolicy.bind(this);
     this.RoleUpdatePolicy = this.RoleUpdatePolicy.bind(this);
+    this.UpdateUserAvatar = this.UpdateUserAvatar.bind(this);
   }
   CreateUser(request: CreateUserRequest): Promise<CreateUserResponse> {
     const data = CreateUserRequest.encode(request).finish();
@@ -1647,6 +1826,16 @@ export class AdminClientImpl implements Admin {
     const promise = this.rpc.request(this.service, "RoleUpdatePolicy", data);
     return promise.then(data => Empty.decode(new BinaryReader(data)));
   }
+
+  UpdateUserAvatar(
+    request: UpdateUserAvatarRequest
+  ): Promise<UpdateUserAvatarResponse> {
+    const data = UpdateUserAvatarRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "UpdateUserAvatar", data);
+    return promise.then(data =>
+      UpdateUserAvatarResponse.decode(new BinaryReader(data))
+    );
+  }
 }
 
 interface Rpc {
@@ -1682,6 +1871,17 @@ export type Exact<P, I extends P> = P extends Builtin
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
       [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
     };
+
+function longToNumber(int64: { toString(): string }): number {
+  const num = globalThis.Number(int64.toString());
+  if (num > globalThis.Number.MAX_SAFE_INTEGER) {
+    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+  }
+  if (num < globalThis.Number.MIN_SAFE_INTEGER) {
+    throw new globalThis.Error("Value is smaller than Number.MIN_SAFE_INTEGER");
+  }
+  return num;
+}
 
 function isObject(value: any): boolean {
   return typeof value === "object" && value !== null;

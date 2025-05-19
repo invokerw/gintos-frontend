@@ -8,6 +8,8 @@ import {
   GetRoleListResponse,
   GetUserListRequest,
   GetUserListResponse,
+  UpdateUserAvatarRequest,
+  UpdateUserAvatarResponse,
   UpdateUsersRequest,
   UpdateUsersResponse
 } from "./api/v1/admin/admin";
@@ -84,5 +86,16 @@ export const getRoleCount = () => {
     baseUrlApi("/api/v1/admin/get_role_count"),
     null,
     IntValue.fromJSON
+  );
+};
+
+export const updateUserAvatar = (data: UpdateUserAvatarRequest) => {
+  return http.request2(
+    "post",
+    baseUrlApi("/api/v1/admin/update_user_avatar"),
+    {
+      data: UpdateUserAvatarRequest.toJSON(data)
+    },
+    UpdateUserAvatarResponse.fromJSON
   );
 };
