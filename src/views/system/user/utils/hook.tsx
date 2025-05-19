@@ -37,7 +37,7 @@ import type {
   GetUserListRequest,
   UpdateUsersRequest
 } from "@/api/api/v1/admin/admin";
-import { UserStatus } from "@/api/api/v1/common/user";
+import { UserGender, UserStatus } from "@/api/api/v1/common/user";
 import { authorityMap, sexMap, statusMap } from "./rule";
 import { useUserStoreHook } from "@/store/modules/user";
 
@@ -108,7 +108,9 @@ export function useUser(tableRef: Ref) {
           type={sexMap[row.gender] ? sexMap[row.gender].type : null}
           effect="plain"
         >
-          {sexMap[row.gender] ? sexMap[row.gender].label : "??"}
+          {sexMap[row.gender]
+            ? sexMap[row.gender].label
+            : sexMap[UserGender.SECRET].label}
         </el-tag>
       )
     },
