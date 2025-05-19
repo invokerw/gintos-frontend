@@ -31,7 +31,16 @@ import {
   ElProgress,
   ElMessageBox
 } from "element-plus";
-import { type Ref, h, ref, watch, computed, reactive, onMounted } from "vue";
+import {
+  type Ref,
+  h,
+  ref,
+  watch,
+  computed,
+  reactive,
+  onMounted,
+  Fragment
+} from "vue";
 import type {
   DeleteUsersRequest,
   GetUserListRequest,
@@ -161,6 +170,16 @@ export function useUser(tableRef: Ref) {
           {authorityMap[row.authority]
             ? authorityMap[row.authority].label
             : "未知"}
+        </el-tag>
+      )
+    },
+    {
+      label: "角色",
+      prop: "roleName",
+      minWidth: 90,
+      cellRenderer: ({ row, props }) => (
+        <el-tag size={props.size} type="info" effect="plain">
+          {row.roleName || "无"}
         </el-tag>
       )
     },
@@ -445,7 +464,7 @@ export function useUser(tableRef: Ref) {
       closeOnClickModal: false,
       fullscreen: deviceDetection(),
       contentRenderer: () => (
-        <>
+        <Fragment>
           <ElForm ref={ruleFormRef} model={pwdForm}>
             <ElFormItem
               prop="newPwd"
@@ -490,7 +509,7 @@ export function useUser(tableRef: Ref) {
               </div>
             ))}
           </div>
-        </>
+        </Fragment>
       ),
       closeCallBack: () => (pwdForm.newPwd = ""),
       beforeSure: done => {
@@ -551,11 +570,17 @@ export function useUser(tableRef: Ref) {
             }
           ]
         } as UpdateUsersRequest)
-          .then(() => {
+          .then(data => {
+            for (let i = 0; i < data.users.length; i++) {
+              if (data.users[i].id === row.id) {
+                row.roleName = data.users[i].roleName;
+              }
+            }
             message(`已成功分配 ${row.username} 用户角色`, {
               type: "success"
             });
             done(); // 关闭弹框
+            onSearch(); // 刷新表格数据
           })
           .catch(err => {
             message(`分配 ${row.username} 用户角色失败 ${err}`, {
