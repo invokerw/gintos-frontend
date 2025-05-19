@@ -200,10 +200,10 @@ router.beforeEach((to: ToRouteType, _from, next) => {
 });
 
 router.afterEach(() => {
-  router.getRoutes().forEach(route => {
-    const { name, meta } = route;
-    console.log(name, meta);
-  });
+  // router.getRoutes().forEach(route => {
+  //   const { name, meta } = route;
+  //   console.log(name, meta);
+  // });
   NProgress.done();
 });
 

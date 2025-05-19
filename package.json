@@ -99,7 +99,7 @@
     "autoprefixer": "^10.4.20",
     "boxen": "^8.0.1",
     "code-inspector-plugin": "^0.18.2",
-    "cropperjs": "^2.0.0",
+    "cropperjs": "1.6.1",
     "cssnano": "^7.0.6",
     "eslint": "^9.16.0",
     "eslint-config-prettier": "^9.1.0",
