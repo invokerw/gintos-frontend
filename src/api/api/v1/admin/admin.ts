@@ -10,6 +10,9 @@ import { Empty } from "../../google/protobuf/empty";
 import { ApiInfo, ApiTypeInfo, IntValue, PageInfo } from "../common/common";
 import {
   Role,
+  RoleStatus,
+  roleStatusFromJSON,
+  roleStatusToJSON,
   User,
   UserStatus,
   userStatusFromJSON,
@@ -74,6 +77,8 @@ export interface GetRoleListRequest {
   page: PageInfo | undefined;
   /** 登录名 */
   name?: string | undefined;
+  /** 状态 */
+  status?: RoleStatus | undefined;
 }
 
 export interface GetRoleListResponse {
@@ -871,7 +876,7 @@ export const DeleteUsersRequest: MessageFns<DeleteUsersRequest> = {
 };
 
 function createBaseGetRoleListRequest(): GetRoleListRequest {
-  return { page: undefined, name: undefined };
+  return { page: undefined, name: undefined, status: undefined };
 }
 
 export const GetRoleListRequest: MessageFns<GetRoleListRequest> = {
@@ -884,6 +889,9 @@ export const GetRoleListRequest: MessageFns<GetRoleListRequest> = {
     }
     if (message.name !== undefined) {
       writer.uint32(18).string(message.name);
+    }
+    if (message.status !== undefined) {
+      writer.uint32(24).int32(message.status);
     }
     return writer;
   },
@@ -915,6 +923,14 @@ export const GetRoleListRequest: MessageFns<GetRoleListRequest> = {
           message.name = reader.string();
           continue;
         }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -927,7 +943,10 @@ export const GetRoleListRequest: MessageFns<GetRoleListRequest> = {
   fromJSON(object: any): GetRoleListRequest {
     return {
       page: isSet(object.page) ? PageInfo.fromJSON(object.page) : undefined,
-      name: isSet(object.name) ? globalThis.String(object.name) : undefined
+      name: isSet(object.name) ? globalThis.String(object.name) : undefined,
+      status: isSet(object.status)
+        ? roleStatusFromJSON(object.status)
+        : undefined
     };
   },
 
@@ -938,6 +957,9 @@ export const GetRoleListRequest: MessageFns<GetRoleListRequest> = {
     }
     if (message.name !== undefined) {
       obj.name = message.name;
+    }
+    if (message.status !== undefined) {
+      obj.status = roleStatusToJSON(message.status);
     }
     return obj;
   },
@@ -956,6 +978,7 @@ export const GetRoleListRequest: MessageFns<GetRoleListRequest> = {
         ? PageInfo.fromPartial(object.page)
         : undefined;
     message.name = object.name ?? undefined;
+    message.status = object.status ?? undefined;
     return message;
   }
 };

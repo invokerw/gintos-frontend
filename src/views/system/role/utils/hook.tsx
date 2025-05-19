@@ -4,13 +4,12 @@ import { handleTree } from "@/utils/tree";
 import { message } from "@/utils/message";
 import { ElMessageBox } from "element-plus";
 import { usePublicHooks } from "../../hooks";
-import { transformI18n } from "@/plugins/i18n";
 import { addDialog } from "@/components/ReDialog";
 import type { FormItemProps } from "../utils/types";
 import type { PaginationProps } from "@pureadmin/table";
 import { getKeyList, deviceDetection } from "@pureadmin/utils";
-import { getRoleList, getRoleMenu, getRoleMenuIds } from "@/api/system";
-import { type Ref, reactive, ref, onMounted, h, toRaw, watch } from "vue";
+import { getRoleList, getRoleMenu, getRoleMenuIds } from "@/api/admin";
+import { type Ref, reactive, ref, onMounted, h, watch } from "vue";
 
 export function useRole(treeRef: Ref) {
   const form = reactive({
@@ -163,11 +162,14 @@ export function useRole(treeRef: Ref) {
 
   async function onSearch() {
     loading.value = true;
-    const { data } = await getRoleList(toRaw(form));
-    dataList.value = data.list;
-    pagination.total = data.total;
-    pagination.pageSize = data.pageSize;
-    pagination.currentPage = data.currentPage;
+    const data = await getRoleList({
+      page: {
+        offset: (pagination.currentPage - 1) * pagination.pageSize,
+        pageSize: pagination.pageSize
+      },
+      name: form.name
+    });
+    dataList.value = data.roles;
 
     setTimeout(() => {
       loading.value = false;

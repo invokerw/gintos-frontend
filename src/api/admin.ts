@@ -99,3 +99,11 @@ export const updateUserAvatar = (data: UpdateUserAvatarRequest) => {
     UpdateUserAvatarResponse.fromJSON
   );
 };
+
+export const getRoleMenu = (data: UpdateUserAvatarRequest) => {
+  return updateUserAvatar(data);
+};
+
+export const getRoleMenuIds = (data: UpdateUserAvatarRequest) => {
+  return getRoleMenu(data);
+};

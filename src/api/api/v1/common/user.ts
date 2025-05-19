@@ -136,6 +136,41 @@ export function userStatusToJSON(object: UserStatus): number {
   }
 }
 
+export enum RoleStatus {
+  /** R_OFF - 禁用 */
+  R_OFF = 0,
+  /** R_ON - 启用 */
+  R_ON = 1,
+  UNRECOGNIZED = -1
+}
+
+export function roleStatusFromJSON(object: any): RoleStatus {
+  switch (object) {
+    case 0:
+    case "R_OFF":
+      return RoleStatus.R_OFF;
+    case 1:
+    case "R_ON":
+      return RoleStatus.R_ON;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return RoleStatus.UNRECOGNIZED;
+  }
+}
+
+export function roleStatusToJSON(object: RoleStatus): number {
+  switch (object) {
+    case RoleStatus.R_OFF:
+      return 0;
+    case RoleStatus.R_ON:
+      return 1;
+    case RoleStatus.UNRECOGNIZED:
+    default:
+      return -1;
+  }
+}
+
 /** 用户 */
 export interface User {
   /** 用户ID */
@@ -184,6 +219,8 @@ export interface Role {
   desc?: string | undefined;
   parentId?: number | undefined;
   sortId?: number | undefined;
+  /** 用户状态 */
+  status?: RoleStatus | undefined;
   /** 创建时间 */
   createTime?: number | undefined;
   /** 更新时间 */
@@ -582,6 +619,7 @@ function createBaseRole(): Role {
     desc: undefined,
     parentId: undefined,
     sortId: undefined,
+    status: undefined,
     createTime: undefined,
     updateTime: undefined
   };
@@ -606,6 +644,9 @@ export const Role: MessageFns<Role> = {
     }
     if (message.sortId !== undefined) {
       writer.uint32(40).int32(message.sortId);
+    }
+    if (message.status !== undefined) {
+      writer.uint32(256).int32(message.status);
     }
     if (message.createTime !== undefined) {
       writer.uint32(1600).int64(message.createTime);
@@ -664,6 +705,14 @@ export const Role: MessageFns<Role> = {
           message.sortId = reader.int32();
           continue;
         }
+        case 32: {
+          if (tag !== 256) {
+            break;
+          }
+
+          message.status = reader.int32() as any;
+          continue;
+        }
         case 200: {
           if (tag !== 1600) {
             break;
@@ -700,6 +749,9 @@ export const Role: MessageFns<Role> = {
       sortId: isSet(object.sort_id)
         ? globalThis.Number(object.sort_id)
         : undefined,
+      status: isSet(object.status)
+        ? roleStatusFromJSON(object.status)
+        : undefined,
       createTime: isSet(object.create_time)
         ? globalThis.Number(object.create_time)
         : undefined,
@@ -726,6 +778,9 @@ export const Role: MessageFns<Role> = {
     if (message.sortId !== undefined) {
       obj.sort_id = Math.round(message.sortId);
     }
+    if (message.status !== undefined) {
+      obj.status = roleStatusToJSON(message.status);
+    }
     if (message.createTime !== undefined) {
       obj.create_time = Math.round(message.createTime);
     }
@@ -745,6 +800,7 @@ export const Role: MessageFns<Role> = {
     message.desc = object.desc ?? undefined;
     message.parentId = object.parentId ?? undefined;
     message.sortId = object.sortId ?? undefined;
+    message.status = object.status ?? undefined;
     message.createTime = object.createTime ?? undefined;
     message.updateTime = object.updateTime ?? undefined;
     return message;
