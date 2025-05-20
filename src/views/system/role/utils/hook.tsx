@@ -6,10 +6,11 @@ import { usePublicHooks } from "../../hooks";
 import { addDialog } from "@/components/ReDialog";
 import type { FormItemProps } from "../utils/types";
 import type { PaginationProps } from "@pureadmin/table";
-import { deviceDetection } from "@pureadmin/utils";
+import { deviceDetection, getKeyList, handleTree } from "@pureadmin/utils";
 import {
   createRole,
   deleteRoles,
+  getApiInfoList,
   getRoleCount,
   getRoleList,
   updateRoles
@@ -319,10 +320,27 @@ export function useRole(treeRef: Ref) {
 
   onMounted(async () => {
     onSearch();
-    // TODO
-    // const { data } = await getRoleMenu();
-    // treeIds.value = getKeyList(data, "id");
-    // treeData.value = handleTree(data);
+    const { apiTypeMap } = await getApiInfoList();
+    const data = [];
+    for (const [key, value] of Object.entries(apiTypeMap)) {
+      data.push({
+        id: key,
+        title: key,
+        type: 0,
+        parentId: 0
+      });
+      for (const api of value.apiInfo) {
+        data.push({
+          id: api.name,
+          title: api.name,
+          type: 1,
+          parentId: key
+        });
+      }
+    }
+    treeIds.value = getKeyList(data, "id");
+    treeData.value = handleTree(data);
+    console.log("data", treeData.value);
   });
 
   watch(isExpandAll, val => {

@@ -15,8 +15,8 @@ import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
 
 import dayIcon from "@/assets/svg/day.svg?component";
 import darkIcon from "@/assets/svg/dark.svg?component";
-import Lock from "@iconify-icons/ri/lock-fill";
-import User from "@iconify-icons/ri/user-3-fill";
+import Lock from "~icons/ri/lock-fill";
+import User from "~icons/ri/user-3-fill";
 
 defineOptions({
   name: "Login"

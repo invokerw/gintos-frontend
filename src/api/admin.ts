@@ -7,10 +7,13 @@ import {
   CreateUserResponse,
   DeleteRolesRequest,
   DeleteUsersRequest,
+  GetApiInfoListResponse,
   GetRoleListRequest,
   GetRoleListResponse,
   GetUserListRequest,
   GetUserListResponse,
+  RoleGetPolicyResponse,
+  RoleUpdatePolicyRequest,
   UpdateRolesRequest,
   UpdateRolesResponse,
   UpdateUserAvatarRequest,
@@ -129,10 +132,26 @@ export const updateUserAvatar = (data: UpdateUserAvatarRequest) => {
   );
 };
 
-export const getRoleMenu = (data: UpdateUserAvatarRequest) => {
-  return updateUserAvatar(data);
+export const getApiInfoList = () => {
+  return http.request2(
+    "get",
+    baseUrlApi("/api/v1/admin/get_api_info"),
+    null,
+    GetApiInfoListResponse.fromJSON
+  );
 };
 
-export const getRoleMenuIds = (data: UpdateUserAvatarRequest) => {
-  return getRoleMenu(data);
+export const getRolePolicy = (roleCode: string) => {
+  return http.request2(
+    "get",
+    baseUrlApi(`/api/v1/admin/role_get_policy/${roleCode}`),
+    null,
+    RoleGetPolicyResponse.fromJSON
+  );
+};
+
+export const updateRolePolicy = (data: RoleUpdatePolicyRequest) => {
+  return http.request2("post", baseUrlApi("/api/v1/admin/role_update_policy"), {
+    data: RoleUpdatePolicyRequest.toJSON(data)
+  });
 };

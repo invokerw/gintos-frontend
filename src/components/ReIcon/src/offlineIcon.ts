@@ -12,3 +12,14 @@ import Search from "@iconify-icons/ri/search-line";
 import InformationLine from "@iconify-icons/ri/information-line";
 addIcon("ri:search-line", Search);
 addIcon("ri:information-line", InformationLine);
+
+// const icons = [
+//   ["ep:lollipop", Lollipop],
+//   ["ep:home-filled", HomeFilled],
+//   ["ri:search-line", Search],
+//   ["ri:information-line", InformationLine]
+// ];
+
+// icons.forEach(([name, icon]) => {
+//   addIcon(name as string, getSvgInfo(icon as string));
+// });
