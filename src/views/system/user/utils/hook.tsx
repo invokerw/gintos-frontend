@@ -239,23 +239,23 @@ export function useUser(tableRef: Ref) {
         dangerouslyUseHTMLString: true,
         draggable: true
       }
-    )
-      .then(() => {
-        switchLoadMap.value[index] = Object.assign(
-          {},
-          switchLoadMap.value[index],
+    ).then(() => {
+      switchLoadMap.value[index] = Object.assign(
+        {},
+        switchLoadMap.value[index],
+        {
+          loading: true
+        }
+      );
+      updateUsers({
+        users: [
           {
-            loading: true
+            id: row.id,
+            status: row.status
           }
-        );
-        updateUsers({
-          users: [
-            {
-              id: row.id,
-              status: row.status
-            }
-          ]
-        } as UpdateUsersRequest).then(() => {
+        ]
+      } as UpdateUsersRequest)
+        .then(() => {
           message("已成功修改用户状态", {
             type: "success"
           });
@@ -266,20 +266,23 @@ export function useUser(tableRef: Ref) {
               loading: false
             }
           );
+        })
+        .catch(error => {
+          message(`修改用户状态失败: ${error}`, {
+            type: "error"
+          });
+          row.status === UserStatus.OFF
+            ? (row.status = UserStatus.ON)
+            : (row.status = UserStatus.OFF);
+          switchLoadMap.value[index] = Object.assign(
+            {},
+            switchLoadMap.value[index],
+            {
+              loading: false
+            }
+          );
         });
-      })
-      .catch(() => {
-        row.status === UserStatus.OFF
-          ? (row.status = UserStatus.ON)
-          : (row.status = UserStatus.OFF);
-        switchLoadMap.value[index] = Object.assign(
-          {},
-          switchLoadMap.value[index],
-          {
-            loading: false
-          }
-        );
-      });
+    });
   }
 
   function handleUpdate(row) {
@@ -299,8 +302,8 @@ export function useUser(tableRef: Ref) {
         message(`您删除了用户${row.username}这条数据`, { type: "success" });
         onSearch();
       })
-      .catch(err => {
-        message(`删除用户${row.username}失败 ${err}`, {
+      .catch(error => {
+        message(`删除用户${row.username}失败: ${error}`, {
           type: "error"
         });
       });
@@ -334,7 +337,6 @@ export function useUser(tableRef: Ref) {
 
   /** 批量删除 */
   function onbatchDel() {
-    // 返回当前选中的行
     const curSelected = tableRef.value.getTableRef().getSelectionRows();
     const myUsername = useUserStoreHook().username;
     if (curSelected.some(item => item.username === myUsername)) {
@@ -351,31 +353,37 @@ export function useUser(tableRef: Ref) {
         tableRef.value.getTableRef().clearSelection();
         onSearch();
       })
-      .catch(err => {
-        message(`批量删除失败 ${err}`, { type: "error" });
+      .catch(error => {
+        message(`批量删除失败: ${error}`, { type: "error" });
       });
   }
 
   async function onSearch() {
     loading.value = true;
-    pagination.total = (await getUserCount()).data;
-    const reqData: GetUserListRequest = {
-      page: {
-        offset: (pagination.currentPage - 1) * pagination.pageSize,
-        pageSize: pagination.pageSize
-      },
-      username: form.username,
-      phone: form.phone,
-      email: form.email
-    };
-    const data = await getUserList(reqData);
-    dataList.value = data.users;
-    // console.log("onSearch data", data.users);
-    // console.log("onSearch dataList", dataList.value);
+    try {
+      const countResponse = await getUserCount();
+      pagination.total = countResponse.data;
 
-    setTimeout(() => {
+      const reqData: GetUserListRequest = {
+        page: {
+          offset: (pagination.currentPage - 1) * pagination.pageSize,
+          pageSize: pagination.pageSize
+        },
+        username: form.username,
+        phone: form.phone,
+        email: form.email
+      };
+      const data = await getUserList(reqData);
+      dataList.value = data.users;
+    } catch (error) {
+      message(`获取用户列表失败: ${error}`, {
+        type: "error"
+      });
+      dataList.value = [];
+      pagination.total = 0;
+    } finally {
       loading.value = false;
-    }, 500);
+    }
   }
 
   const resetForm = formEl => {
@@ -411,23 +419,32 @@ export function useUser(tableRef: Ref) {
         }
         FormRef.validate(valid => {
           if (valid) {
-            console.log("openDialog curData", curData);
-            // 表单规则校验通过
             if (title === "新增") {
-              // 实际开发先调用新增接口，再进行下面操作
-              createUser({ user: curData }).then(() => {
-                message("新增用户成功", {
-                  type: "success"
+              createUser({ user: curData })
+                .then(() => {
+                  message("新增用户成功", {
+                    type: "success"
+                  });
+                  chores();
+                })
+                .catch(error => {
+                  message(`新增用户失败: ${error}`, {
+                    type: "error"
+                  });
                 });
-                chores();
-              });
             } else {
-              updateUsers({ users: [curData] }).then(() => {
-                message("修改用户成功", {
-                  type: "success"
+              updateUsers({ users: [curData] })
+                .then(() => {
+                  message("修改用户成功", {
+                    type: "success"
+                  });
+                  chores();
+                })
+                .catch(error => {
+                  message(`修改用户失败: ${error}`, {
+                    type: "error"
+                  });
                 });
-                chores();
-              });
             }
           }
         });
@@ -450,17 +467,22 @@ export function useUser(tableRef: Ref) {
           onCropper: info => (avatarInfo.value = info)
         }),
       beforeSure: done => {
-        console.log("裁剪后的图片信息：", avatarInfo.value);
         updateUserAvatar({
           id: row.id,
           avatarData: avatarInfo.value["base64"]
-        }).then(() => {
-          message("上传头像成功", {
-            type: "success"
+        })
+          .then(() => {
+            message("上传头像成功", {
+              type: "success"
+            });
+            done(); // 关闭弹框
+            onSearch(); // 刷新表格数据
+          })
+          .catch(error => {
+            message(`上传头像失败: ${error}`, {
+              type: "error"
+            });
           });
-          done(); // 关闭弹框
-          onSearch(); // 刷新表格数据
-        });
       },
       closeCallBack: () => cropRef.value.hidePopover()
     });
@@ -547,8 +569,8 @@ export function useUser(tableRef: Ref) {
                 done(); // 关闭弹框
                 onSearch(); // 刷新表格数据
               })
-              .catch(err => {
-                message(`重置 ${row.username} 用户的密码失败 ${err}`, {
+              .catch(error => {
+                message(`重置 ${row.username} 用户的密码失败: ${error}`, {
                   type: "error"
                 });
               });
@@ -578,7 +600,6 @@ export function useUser(tableRef: Ref) {
       contentRenderer: () => h(roleForm),
       beforeSure: (done, { options }) => {
         const curData = options.props.formInline as RoleFormItemProps;
-        console.log("curIds", curData.roleName);
         updateUsers({
           users: [
             {
@@ -599,8 +620,8 @@ export function useUser(tableRef: Ref) {
             done(); // 关闭弹框
             onSearch(); // 刷新表格数据
           })
-          .catch(err => {
-            message(`分配 ${row.username} 用户角色失败 ${err}`, {
+          .catch(error => {
+            message(`分配 ${row.username} 用户角色失败: ${error}`, {
               type: "error"
             });
           });
@@ -609,17 +630,21 @@ export function useUser(tableRef: Ref) {
   }
 
   onMounted(async () => {
-    onSearch();
-
-    // 角色列表
-    roleOptions.value = (
-      await getRoleList({
+    try {
+      await onSearch();
+      // 角色列表
+      const roleResponse = await getRoleList({
         page: {
           offset: 0,
           pageSize: 99999
         }
-      })
-    ).roles;
+      });
+      roleOptions.value = roleResponse.roles;
+    } catch (error) {
+      message(`初始化数据失败: ${error}`, {
+        type: "error"
+      });
+    }
   });
 
   return {
