@@ -130,23 +130,23 @@ export function useRole(treeRef: Ref) {
         dangerouslyUseHTMLString: true,
         draggable: true
       }
-    )
-      .then(() => {
-        switchLoadMap.value[index] = Object.assign(
-          {},
-          switchLoadMap.value[index],
+    ).then(() => {
+      switchLoadMap.value[index] = Object.assign(
+        {},
+        switchLoadMap.value[index],
+        {
+          loading: true
+        }
+      );
+      updateRoles({
+        roles: [
           {
-            loading: true
+            code: row.code,
+            status: row.status
           }
-        );
-        updateRoles({
-          roles: [
-            {
-              code: row.code,
-              status: row.status
-            }
-          ]
-        }).then(() => {
+        ]
+      })
+        .then(() => {
           message("已成功修改角色状态", {
             type: "success"
           });
@@ -157,20 +157,23 @@ export function useRole(treeRef: Ref) {
               loading: false
             }
           );
+        })
+        .catch(error => {
+          message(`修改角色状态失败: ${error}`, {
+            type: "error"
+          });
+          row.status === RoleStatus.R_OFF
+            ? (row.status = RoleStatus.R_ON)
+            : (row.status = RoleStatus.R_OFF);
+          switchLoadMap.value[index] = Object.assign(
+            {},
+            switchLoadMap.value[index],
+            {
+              loading: false
+            }
+          );
         });
-      })
-      .catch(() => {
-        row.status === RoleStatus.R_OFF
-          ? (row.status = RoleStatus.R_ON)
-          : (row.status = RoleStatus.R_OFF);
-        switchLoadMap.value[index] = Object.assign(
-          {},
-          switchLoadMap.value[index],
-          {
-            loading: false
-          }
-        );
-      });
+    });
   }
 
   function handleDelete(row) {
@@ -179,8 +182,8 @@ export function useRole(treeRef: Ref) {
         message(`您删除了角色名称为${row.name}的这条数据`, { type: "success" });
         onSearch();
       })
-      .catch(err => {
-        message(`删除角色${row.name}失败 ${err}`, {
+      .catch(error => {
+        message(`删除角色${row.name}失败: ${error}`, {
           type: "error"
         });
       });
@@ -204,19 +207,27 @@ export function useRole(treeRef: Ref) {
 
   async function onSearch() {
     loading.value = true;
-    pagination.total = (await getRoleCount()).data;
-    const data = await getRoleList({
-      page: {
-        offset: (pagination.currentPage - 1) * pagination.pageSize,
-        pageSize: pagination.pageSize
-      },
-      name: form.name
-    });
-    dataList.value = data.roles;
+    try {
+      const countResponse = await getRoleCount();
+      pagination.total = countResponse.data;
 
-    setTimeout(() => {
+      const data = await getRoleList({
+        page: {
+          offset: (pagination.currentPage - 1) * pagination.pageSize,
+          pageSize: pagination.pageSize
+        },
+        name: form.name
+      });
+      dataList.value = data.roles;
+    } catch (error) {
+      message(`获取角色列表失败: ${error}`, {
+        type: "error"
+      });
+      dataList.value = [];
+      pagination.total = 0;
+    } finally {
       loading.value = false;
-    }, 500);
+    }
   }
 
   const resetForm = formEl => {
@@ -256,20 +267,32 @@ export function useRole(treeRef: Ref) {
             // 表单规则校验通过
             if (title === "新增") {
               // 实际开发先调用新增接口，再进行下面操作
-              createRole({ role: curData }).then(() => {
-                message("新增角色成功", {
-                  type: "success"
+              createRole({ role: curData })
+                .then(() => {
+                  message("新增角色成功", {
+                    type: "success"
+                  });
+                  chores();
+                })
+                .catch(error => {
+                  message(`新增角色失败: ${error}`, {
+                    type: "error"
+                  });
                 });
-                chores();
-              });
             } else {
               // 实际开发先调用修改接口，再进行下面操作
-              updateRoles({ roles: [curData] }).then(() => {
-                message("修改角色成功", {
-                  type: "success"
+              updateRoles({ roles: [curData] })
+                .then(() => {
+                  message("修改角色成功", {
+                    type: "success"
+                  });
+                  chores();
+                })
+                .catch(error => {
+                  message(`修改角色失败: ${error}`, {
+                    type: "error"
+                  });
                 });
-                chores();
-              });
             }
           }
         });
@@ -283,8 +306,15 @@ export function useRole(treeRef: Ref) {
     if (code) {
       curRow.value = row;
       isShow.value = true;
-      const { apiInfo } = await getRolePolicy(row.code);
-      treeRef.value.setCheckedKeys(apiInfo.map(item => item.name));
+      try {
+        const { apiInfo } = await getRolePolicy(row.code);
+        treeRef.value.setCheckedKeys(apiInfo.map(item => item.name));
+      } catch (error) {
+        message(`获取角色权限失败: ${error}`, {
+          type: "error"
+        });
+        isShow.value = false;
+      }
     } else {
       curRow.value = null;
       isShow.value = false;
@@ -309,8 +339,8 @@ export function useRole(treeRef: Ref) {
           type: "success"
         });
       })
-      .catch(() => {
-        message(`角色名称为${name}的菜单权限修改失败`, {
+      .catch(error => {
+        message(`角色名称为${name}的菜单权限修改失败: ${error}`, {
           type: "error"
         });
       });

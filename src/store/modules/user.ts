@@ -17,8 +17,7 @@ import type {
   LoginResponse
 } from "@/api/api/v1/auth/auth";
 
-export const useUserStore = defineStore({
-  id: "pure-user",
+export const useUserStore = defineStore("pure-user", {
   state: (): userType => ({
     // 头像
     avatar: storageLocal().getItem<DataInfo<number>>(userKey)?.avatar ?? "",
