@@ -19,6 +19,7 @@ import Menu from "~icons/ep/menu";
 import AddFill from "~icons/ri/add-circle-line";
 import Close from "~icons/ep/close";
 import Check from "~icons/ep/check";
+import Search from "~icons/ri/search-line";
 
 defineOptions({
   name: "SystemRole"
@@ -66,8 +67,8 @@ const {
   onSearch,
   resetForm,
   openDialog,
-  handleMenu,
-  handleSave,
+  handleRolePolicy,
+  handleRolePolicySave,
   handleDelete,
   filterMethod,
   onQueryChanged,
@@ -127,7 +128,7 @@ onMounted(() => {
       <el-form-item>
         <el-button
           type="primary"
-          :icon="useRenderIcon('ri/search-line')"
+          :icon="useRenderIcon(Search)"
           :loading="loading"
           @click="onSearch"
         >
@@ -146,7 +147,7 @@ onMounted(() => {
       <PureTableBar
         :class="[isShow && !deviceDetection() ? '!w-[60vw]' : 'w-full']"
         style="transition: width 220ms cubic-bezier(0.4, 0, 0.2, 1)"
-        title="角色管理（仅演示，操作后不生效）"
+        title="角色管理"
         :columns="columns"
         @refresh="onSearch"
       >
@@ -214,7 +215,7 @@ onMounted(() => {
                 type="primary"
                 :size="size"
                 :icon="useRenderIcon(Menu)"
-                @click="handleMenu(row)"
+                @click="handleRolePolicy(row)"
               >
                 权限
               </el-button>
@@ -275,25 +276,25 @@ onMounted(() => {
                 width="18px"
                 height="18px"
                 :icon="Close"
-                @click="handleMenu"
+                @click="handleRolePolicy"
               />
             </span>
             <span :class="[iconClass, 'ml-2']">
               <IconifyIconOffline
                 v-tippy="{
-                  content: '保存菜单权限'
+                  content: '保存'
                 }"
                 class="dark:text-white"
                 width="18px"
                 height="18px"
                 :icon="Check"
-                @click="handleSave"
+                @click="handleRolePolicySave"
               />
             </span>
           </div>
           <p class="font-bold truncate">
+            {{ `${curRow?.name ? `${curRow.name}` : ""}` }}
             菜单权限
-            {{ `${curRow?.name ? `（${curRow.name}）` : ""}` }}
           </p>
         </div>
         <el-input
@@ -306,7 +307,7 @@ onMounted(() => {
         <div class="flex flex-wrap">
           <el-checkbox v-model="isExpandAll" label="展开/折叠" />
           <el-checkbox v-model="isSelectAll" label="全选/全不选" />
-          <el-checkbox v-model="isLinkage" label="父子联动" />
+          <!-- <el-checkbox v-model="isLinkage" label="父子联动" /> -->
         </div>
         <el-tree-v2
           ref="treeRef"

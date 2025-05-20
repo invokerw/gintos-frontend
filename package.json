@@ -51,7 +51,7 @@
     "@bufbuild/protobuf": "^2.2.5",
     "@pureadmin/descriptions": "^1.2.1",
     "@pureadmin/table": "^3.2.1",
-    "@pureadmin/utils": "^2.5.0",
+    "@pureadmin/utils": "^2.6.0",
     "@vueuse/core": "^12.0.0",
     "@vueuse/motion": "^2.2.6",
     "animate.css": "^4.1.1",

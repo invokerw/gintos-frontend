@@ -13,6 +13,8 @@ import {
   getApiInfoList,
   getRoleCount,
   getRoleList,
+  getRolePolicy,
+  updateRolePolicy,
   updateRoles
 } from "@/api/admin";
 import { type Ref, reactive, ref, onMounted, h, watch } from "vue";
@@ -30,9 +32,10 @@ export function useRole(treeRef: Ref) {
   const dataList = ref([]);
   const treeIds = ref([]);
   const treeData = ref([]);
+  const flatTreeData = ref([]);
   const isShow = ref(false);
   const loading = ref(true);
-  const isLinkage = ref(false);
+  const isLinkage = ref(true);
   const treeSearchValue = ref();
   const switchLoadMap = ref({});
   const isExpandAll = ref(false);
@@ -274,19 +277,43 @@ export function useRole(treeRef: Ref) {
     });
   }
 
-  /** 菜单权限 */
-  async function handleMenu(row?: any) {
-    const { id } = row;
-    if (id) {
+  /** 权限 */
+  async function handleRolePolicy(row?: any) {
+    const { code } = row;
+    if (code) {
       curRow.value = row;
       isShow.value = true;
-      // TODO
-      // const { data } = await getRoleMenuIds({ id });
-      // treeRef.value.setCheckedKeys(data);
+      const { apiInfo } = await getRolePolicy(row.code);
+      treeRef.value.setCheckedKeys(apiInfo.map(item => item.name));
     } else {
       curRow.value = null;
       isShow.value = false;
     }
+  }
+
+  /** 权限-保存 */
+  function handleRolePolicySave() {
+    const { code, name } = curRow.value;
+    const apiInfo = flatTreeData.value.filter(item => item.type !== 0);
+    const checkedKeys = treeRef.value.getCheckedKeys();
+    const checkedApiInfo = apiInfo.filter(item =>
+      checkedKeys.includes(item.id)
+    );
+    // 根据用户 id 调用实际项目中菜单权限修改接口
+    updateRolePolicy({
+      roleCode: code,
+      apiName: checkedApiInfo.map(item => item.id)
+    })
+      .then(() => {
+        message(`角色名称为${name}的菜单权限修改成功`, {
+          type: "success"
+        });
+      })
+      .catch(() => {
+        message(`角色名称为${name}的菜单权限修改失败`, {
+          type: "error"
+        });
+      });
   }
 
   /** 高亮当前权限选中行 */
@@ -295,16 +322,6 @@ export function useRole(treeRef: Ref) {
       cursor: "pointer",
       background: id === curRow.value?.id ? "var(--el-fill-color-light)" : ""
     };
-  }
-
-  /** 菜单权限-保存 */
-  function handleSave() {
-    const { id, name } = curRow.value;
-    // 根据用户 id 调用实际项目中菜单权限修改接口
-    console.log(id, treeRef.value.getCheckedKeys());
-    message(`角色名称为${name}的菜单权限修改成功`, {
-      type: "success"
-    });
   }
 
   /** 数据权限 可自行开发 */
@@ -326,21 +343,22 @@ export function useRole(treeRef: Ref) {
       data.push({
         id: key,
         title: key,
-        type: 0,
+        type: 0, // 0: 菜单, 1: 接口
         parentId: 0
       });
       for (const api of value.apiInfo) {
         data.push({
           id: api.name,
           title: api.name,
-          type: 1,
+          type: 1, // 0: 菜单, 1: 接口
           parentId: key
         });
       }
     }
+    flatTreeData.value = data;
     treeIds.value = getKeyList(data, "id");
     treeData.value = handleTree(data);
-    console.log("data", treeData.value);
+    // console.log("data", treeData.value);
   });
 
   watch(isExpandAll, val => {
@@ -374,8 +392,8 @@ export function useRole(treeRef: Ref) {
     onSearch,
     resetForm,
     openDialog,
-    handleMenu,
-    handleSave,
+    handleRolePolicy,
+    handleRolePolicySave,
     handleDelete,
     filterMethod,
     onQueryChanged,
