@@ -102,7 +102,7 @@ onMounted(() => {
           v-model="form.name"
           placeholder="请输入角色名称"
           clearable
-          class="w-[180px]!"
+          class="!w-[180px]"
         />
       </el-form-item>
       <el-form-item label="角色标识：" prop="code">
@@ -110,7 +110,7 @@ onMounted(() => {
           v-model="form.code"
           placeholder="请输入角色标识"
           clearable
-          class="w-[180px]!"
+          class="!w-[180px]"
         />
       </el-form-item>
       <el-form-item label="状态：" prop="status">
@@ -118,7 +118,7 @@ onMounted(() => {
           v-model="form.status"
           placeholder="请选择状态"
           clearable
-          class="w-[180px]!"
+          class="!w-[180px]"
         >
           <el-option label="已启用" value="1" />
           <el-option label="已停用" value="0" />

@@ -7,8 +7,16 @@ import { addDialog } from "@/components/ReDialog";
 import type { FormItemProps } from "../utils/types";
 import type { PaginationProps } from "@pureadmin/table";
 import { deviceDetection } from "@pureadmin/utils";
-import { getRoleList } from "@/api/admin";
+import {
+  createRole,
+  deleteRoles,
+  getRoleCount,
+  getRoleList,
+  updateRoles
+} from "@/api/admin";
 import { type Ref, reactive, ref, onMounted, h, watch } from "vue";
+import { RoleStatus } from "@/api/api/v1/common/user";
+import { roleStatusMap } from "./rule";
 
 export function useRole(treeRef: Ref) {
   const form = reactive({
@@ -55,21 +63,22 @@ export function useRole(treeRef: Ref) {
     },
     {
       label: "状态",
+      prop: "status",
+      minWidth: 90,
       cellRenderer: scope => (
         <el-switch
           size={scope.props.size === "small" ? "small" : "default"}
           loading={switchLoadMap.value[scope.index]?.loading}
           v-model={scope.row.status}
-          active-value={1}
-          inactive-value={0}
-          active-text="已启用"
-          inactive-text="已停用"
+          active-value={RoleStatus.R_ON}
+          inactive-value={RoleStatus.R_OFF}
+          active-text={roleStatusMap[RoleStatus.R_ON]}
+          inactive-text={roleStatusMap[RoleStatus.R_OFF]}
           inline-prompt
           style={switchStyle.value}
-          onChange={() => onChange(scope as any)}
+          onChange={() => onRoleStatusChange(scope as any)}
         />
-      ),
-      minWidth: 90
+      )
     },
     {
       label: "备注",
@@ -81,7 +90,7 @@ export function useRole(treeRef: Ref) {
       prop: "createTime",
       minWidth: 160,
       formatter: ({ createTime }) =>
-        dayjs(createTime).format("YYYY-MM-DD HH:mm:ss")
+        dayjs(createTime * 1000).format("YYYY-MM-DD HH:mm:ss")
     },
     {
       label: "操作",
@@ -100,10 +109,12 @@ export function useRole(treeRef: Ref) {
   //   ];
   // });
 
-  function onChange({ row, index }) {
+  function onRoleStatusChange({ row, index }) {
     ElMessageBox.confirm(
       `确认要<strong>${
-        row.status === 0 ? "停用" : "启用"
+        row.status === RoleStatus.R_OFF
+          ? roleStatusMap[RoleStatus.R_OFF]
+          : roleStatusMap[RoleStatus.R_ON]
       }</strong><strong style='color:var(--el-color-primary)'>${
         row.name
       }</strong>吗?`,
@@ -124,7 +135,17 @@ export function useRole(treeRef: Ref) {
             loading: true
           }
         );
-        setTimeout(() => {
+        updateRoles({
+          roles: [
+            {
+              code: row.code,
+              status: row.status
+            }
+          ]
+        }).then(() => {
+          message("已成功修改角色状态", {
+            type: "success"
+          });
           switchLoadMap.value[index] = Object.assign(
             {},
             switchLoadMap.value[index],
@@ -132,27 +153,45 @@ export function useRole(treeRef: Ref) {
               loading: false
             }
           );
-          message(`已${row.status === 0 ? "停用" : "启用"}${row.name}`, {
-            type: "success"
-          });
-        }, 300);
+        });
       })
       .catch(() => {
-        row.status === 0 ? (row.status = 1) : (row.status = 0);
+        row.status === RoleStatus.R_OFF
+          ? (row.status = RoleStatus.R_ON)
+          : (row.status = RoleStatus.R_OFF);
+        switchLoadMap.value[index] = Object.assign(
+          {},
+          switchLoadMap.value[index],
+          {
+            loading: false
+          }
+        );
       });
   }
 
   function handleDelete(row) {
-    message(`您删除了角色名称为${row.name}的这条数据`, { type: "success" });
-    onSearch();
+    deleteRoles({ codes: [row.code] })
+      .then(() => {
+        message(`您删除了角色名称为${row.name}的这条数据`, { type: "success" });
+        onSearch();
+      })
+      .catch(err => {
+        message(`删除角色${row.name}失败 ${err}`, {
+          type: "error"
+        });
+      });
   }
 
   function handleSizeChange(val: number) {
-    console.log(`${val} items per page`);
+    // console.log(`${val} items per page`);
+    pagination.pageSize = val;
+    onSearch();
   }
 
   function handleCurrentChange(val: number) {
-    console.log(`current page: ${val}`);
+    // console.log(`current page: ${val}`);
+    pagination.currentPage = val;
+    onSearch();
   }
 
   function handleSelectionChange(val) {
@@ -161,6 +200,7 @@ export function useRole(treeRef: Ref) {
 
   async function onSearch() {
     loading.value = true;
+    pagination.total = (await getRoleCount()).data;
     const data = await getRoleList({
       page: {
         offset: (pagination.currentPage - 1) * pagination.pageSize,
@@ -186,9 +226,8 @@ export function useRole(treeRef: Ref) {
       title: `${title}角色`,
       props: {
         formInline: {
-          name: row?.name ?? "",
-          code: row?.code ?? "",
-          remark: row?.remark ?? ""
+          title,
+          ...row
         }
       },
       width: "40%",
@@ -209,14 +248,24 @@ export function useRole(treeRef: Ref) {
         }
         FormRef.validate(valid => {
           if (valid) {
-            console.log("curData", curData);
+            console.log("openDialog curData", curData);
             // 表单规则校验通过
             if (title === "新增") {
               // 实际开发先调用新增接口，再进行下面操作
-              chores();
+              createRole({ role: curData }).then(() => {
+                message("新增角色成功", {
+                  type: "success"
+                });
+                chores();
+              });
             } else {
               // 实际开发先调用修改接口，再进行下面操作
-              chores();
+              updateRoles({ roles: [curData] }).then(() => {
+                message("修改角色成功", {
+                  type: "success"
+                });
+                chores();
+              });
             }
           }
         });

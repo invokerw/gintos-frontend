@@ -195,7 +195,7 @@ export interface User {
   phone?: string | undefined;
   /** 性别 */
   gender?: UserGender | undefined;
-  /** 备注名 */
+  /** 备注 */
   remark?: string | undefined;
   /** 最后登录时间 */
   lastLoginTime?: number | undefined;
@@ -216,11 +216,12 @@ export interface Role {
   /** 角色ID */
   id?: number | undefined;
   name?: string | undefined;
-  desc?: string | undefined;
-  parentId?: number | undefined;
+  code?: string | undefined;
   sortId?: number | undefined;
   /** 用户状态 */
   status?: RoleStatus | undefined;
+  /** 备注 */
+  remark?: string | undefined;
   /** 创建时间 */
   createTime?: number | undefined;
   /** 更新时间 */
@@ -616,10 +617,10 @@ function createBaseRole(): Role {
   return {
     id: undefined,
     name: undefined,
-    desc: undefined,
-    parentId: undefined,
+    code: undefined,
     sortId: undefined,
     status: undefined,
+    remark: undefined,
     createTime: undefined,
     updateTime: undefined
   };
@@ -636,17 +637,17 @@ export const Role: MessageFns<Role> = {
     if (message.name !== undefined) {
       writer.uint32(18).string(message.name);
     }
-    if (message.desc !== undefined) {
-      writer.uint32(26).string(message.desc);
-    }
-    if (message.parentId !== undefined) {
-      writer.uint32(32).uint64(message.parentId);
+    if (message.code !== undefined) {
+      writer.uint32(26).string(message.code);
     }
     if (message.sortId !== undefined) {
       writer.uint32(40).int32(message.sortId);
     }
     if (message.status !== undefined) {
       writer.uint32(256).int32(message.status);
+    }
+    if (message.remark !== undefined) {
+      writer.uint32(266).string(message.remark);
     }
     if (message.createTime !== undefined) {
       writer.uint32(1600).int64(message.createTime);
@@ -686,15 +687,7 @@ export const Role: MessageFns<Role> = {
             break;
           }
 
-          message.desc = reader.string();
-          continue;
-        }
-        case 4: {
-          if (tag !== 32) {
-            break;
-          }
-
-          message.parentId = longToNumber(reader.uint64());
+          message.code = reader.string();
           continue;
         }
         case 5: {
@@ -711,6 +704,14 @@ export const Role: MessageFns<Role> = {
           }
 
           message.status = reader.int32() as any;
+          continue;
+        }
+        case 33: {
+          if (tag !== 266) {
+            break;
+          }
+
+          message.remark = reader.string();
           continue;
         }
         case 200: {
@@ -742,15 +743,15 @@ export const Role: MessageFns<Role> = {
     return {
       id: isSet(object.id) ? globalThis.Number(object.id) : undefined,
       name: isSet(object.name) ? globalThis.String(object.name) : undefined,
-      desc: isSet(object.desc) ? globalThis.String(object.desc) : undefined,
-      parentId: isSet(object.parent_id)
-        ? globalThis.Number(object.parent_id)
-        : undefined,
+      code: isSet(object.code) ? globalThis.String(object.code) : undefined,
       sortId: isSet(object.sort_id)
         ? globalThis.Number(object.sort_id)
         : undefined,
       status: isSet(object.status)
         ? roleStatusFromJSON(object.status)
+        : undefined,
+      remark: isSet(object.remark)
+        ? globalThis.String(object.remark)
         : undefined,
       createTime: isSet(object.create_time)
         ? globalThis.Number(object.create_time)
@@ -769,17 +770,17 @@ export const Role: MessageFns<Role> = {
     if (message.name !== undefined) {
       obj.name = message.name;
     }
-    if (message.desc !== undefined) {
-      obj.desc = message.desc;
-    }
-    if (message.parentId !== undefined) {
-      obj.parent_id = Math.round(message.parentId);
+    if (message.code !== undefined) {
+      obj.code = message.code;
     }
     if (message.sortId !== undefined) {
       obj.sort_id = Math.round(message.sortId);
     }
     if (message.status !== undefined) {
       obj.status = roleStatusToJSON(message.status);
+    }
+    if (message.remark !== undefined) {
+      obj.remark = message.remark;
     }
     if (message.createTime !== undefined) {
       obj.create_time = Math.round(message.createTime);
@@ -797,10 +798,10 @@ export const Role: MessageFns<Role> = {
     const message = createBaseRole();
     message.id = object.id ?? undefined;
     message.name = object.name ?? undefined;
-    message.desc = object.desc ?? undefined;
-    message.parentId = object.parentId ?? undefined;
+    message.code = object.code ?? undefined;
     message.sortId = object.sortId ?? undefined;
     message.status = object.status ?? undefined;
+    message.remark = object.remark ?? undefined;
     message.createTime = object.createTime ?? undefined;
     message.updateTime = object.updateTime ?? undefined;
     return message;

@@ -1,13 +1,18 @@
 import { http } from "@/utils/http";
 import { baseUrlApi } from "./utils";
 import {
+  CreateRoleRequest,
+  CreateRoleResponse,
   CreateUserRequest,
   CreateUserResponse,
+  DeleteRolesRequest,
   DeleteUsersRequest,
   GetRoleListRequest,
   GetRoleListResponse,
   GetUserListRequest,
   GetUserListResponse,
+  UpdateRolesRequest,
+  UpdateRolesResponse,
   UpdateUserAvatarRequest,
   UpdateUserAvatarResponse,
   UpdateUsersRequest,
@@ -24,6 +29,15 @@ export const createUser = (data: CreateUserRequest) => {
   );
 };
 
+export const createRole = (data: CreateRoleRequest) => {
+  return http.request2(
+    "post",
+    baseUrlApi("/api/v1/admin/create_role"),
+    { data: CreateRoleRequest.toJSON(data) },
+    CreateRoleResponse.fromJSON
+  );
+};
+
 export const updateUsers = (data: UpdateUsersRequest) => {
   return http.request2(
     "post",
@@ -33,9 +47,24 @@ export const updateUsers = (data: UpdateUsersRequest) => {
   );
 };
 
+export const updateRoles = (data: UpdateRolesRequest) => {
+  return http.request2(
+    "post",
+    baseUrlApi("/api/v1/admin/update_roles"),
+    { data: UpdateRolesRequest.toJSON(data) },
+    UpdateRolesResponse.fromJSON
+  );
+};
+
 export const deleteUsers = (data: DeleteUsersRequest) => {
   return http.request2("post", baseUrlApi("/api/v1/admin/delete_users"), {
     data: DeleteUsersRequest.toJSON(data)
+  });
+};
+
+export const deleteRoles = (data: DeleteRolesRequest) => {
+  return http.request2("post", baseUrlApi("/api/v1/admin/delete_roles"), {
+    data: DeleteRolesRequest.toJSON(data)
   });
 };
 

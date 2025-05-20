@@ -259,7 +259,19 @@ export function useUser(tableRef: Ref) {
           message("已成功修改用户状态", {
             type: "success"
           });
+          switchLoadMap.value[index] = Object.assign(
+            {},
+            switchLoadMap.value[index],
+            {
+              loading: false
+            }
+          );
         });
+      })
+      .catch(() => {
+        row.status === UserStatus.OFF
+          ? (row.status = UserStatus.ON)
+          : (row.status = UserStatus.OFF);
         switchLoadMap.value[index] = Object.assign(
           {},
           switchLoadMap.value[index],
@@ -267,11 +279,6 @@ export function useUser(tableRef: Ref) {
             loading: false
           }
         );
-      })
-      .catch(() => {
-        row.status === UserStatus.OFF
-          ? (row.status = UserStatus.ON)
-          : (row.status = UserStatus.OFF);
       });
   }
 
@@ -415,14 +422,12 @@ export function useUser(tableRef: Ref) {
                 chores();
               });
             } else {
-              updateUsers({ users: [curData] } as UpdateUsersRequest).then(
-                () => {
-                  message("修改用户成功", {
-                    type: "success"
-                  });
-                  chores();
-                }
-              );
+              updateUsers({ users: [curData] }).then(() => {
+                message("修改用户成功", {
+                  type: "success"
+                });
+                chores();
+              });
             }
           }
         });

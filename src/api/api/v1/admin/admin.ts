@@ -21,6 +21,16 @@ import {
 
 export const protobufPackage = "api.v1.admin";
 
+export interface CreateRoleRequest {
+  /** 角色信息 */
+  role: Role | undefined;
+}
+
+export interface CreateRoleResponse {
+  /** 角色信息 */
+  role: Role | undefined;
+}
+
 export interface UpdateUserAvatarRequest {
   /** 用户ID */
   id: number;
@@ -75,8 +85,10 @@ export interface DeleteUsersRequest {
 export interface GetRoleListRequest {
   /** 分页信息 */
   page: PageInfo | undefined;
-  /** 登录名 */
+  /** 角色名 */
   name?: string | undefined;
+  /** 角色标识 */
+  code?: string | undefined;
   /** 状态 */
   status?: RoleStatus | undefined;
 }
@@ -95,7 +107,7 @@ export interface UpdateRolesResponse {
 }
 
 export interface DeleteRolesRequest {
-  names: string[];
+  codes: string[];
 }
 
 export interface GetApiInfoListResponse {
@@ -110,22 +122,167 @@ export interface GetApiInfoListResponse_ApiTypeMapEntry {
 
 export interface RoleGetPolicyRequest {
   /** 角色名字 */
-  roleName: string;
+  roleCode: string;
 }
 
 export interface RoleGetPolicyResponse {
   /** 角色名字 */
-  roleName: string;
+  roleCode: string;
   /** API信息 */
   apiInfo: ApiInfo[];
 }
 
 export interface RoleUpdatePolicyRequest {
   /** 角色名字 */
-  roleName: string;
+  roleCode: string;
   /** 权限名字 */
   apiName: string[];
 }
+
+function createBaseCreateRoleRequest(): CreateRoleRequest {
+  return { role: undefined };
+}
+
+export const CreateRoleRequest: MessageFns<CreateRoleRequest> = {
+  encode(
+    message: CreateRoleRequest,
+    writer: BinaryWriter = new BinaryWriter()
+  ): BinaryWriter {
+    if (message.role !== undefined) {
+      Role.encode(message.role, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateRoleRequest {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateRoleRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.role = Role.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CreateRoleRequest {
+    return {
+      role: isSet(object.role) ? Role.fromJSON(object.role) : undefined
+    };
+  },
+
+  toJSON(message: CreateRoleRequest): unknown {
+    const obj: any = {};
+    if (message.role !== undefined) {
+      obj.role = Role.toJSON(message.role);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CreateRoleRequest>, I>>(
+    base?: I
+  ): CreateRoleRequest {
+    return CreateRoleRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CreateRoleRequest>, I>>(
+    object: I
+  ): CreateRoleRequest {
+    const message = createBaseCreateRoleRequest();
+    message.role =
+      object.role !== undefined && object.role !== null
+        ? Role.fromPartial(object.role)
+        : undefined;
+    return message;
+  }
+};
+
+function createBaseCreateRoleResponse(): CreateRoleResponse {
+  return { role: undefined };
+}
+
+export const CreateRoleResponse: MessageFns<CreateRoleResponse> = {
+  encode(
+    message: CreateRoleResponse,
+    writer: BinaryWriter = new BinaryWriter()
+  ): BinaryWriter {
+    if (message.role !== undefined) {
+      Role.encode(message.role, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(
+    input: BinaryReader | Uint8Array,
+    length?: number
+  ): CreateRoleResponse {
+    const reader =
+      input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateRoleResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.role = Role.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CreateRoleResponse {
+    return {
+      role: isSet(object.role) ? Role.fromJSON(object.role) : undefined
+    };
+  },
+
+  toJSON(message: CreateRoleResponse): unknown {
+    const obj: any = {};
+    if (message.role !== undefined) {
+      obj.role = Role.toJSON(message.role);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CreateRoleResponse>, I>>(
+    base?: I
+  ): CreateRoleResponse {
+    return CreateRoleResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CreateRoleResponse>, I>>(
+    object: I
+  ): CreateRoleResponse {
+    const message = createBaseCreateRoleResponse();
+    message.role =
+      object.role !== undefined && object.role !== null
+        ? Role.fromPartial(object.role)
+        : undefined;
+    return message;
+  }
+};
 
 function createBaseUpdateUserAvatarRequest(): UpdateUserAvatarRequest {
   return { id: 0, avatarData: "" };
@@ -876,7 +1033,12 @@ export const DeleteUsersRequest: MessageFns<DeleteUsersRequest> = {
 };
 
 function createBaseGetRoleListRequest(): GetRoleListRequest {
-  return { page: undefined, name: undefined, status: undefined };
+  return {
+    page: undefined,
+    name: undefined,
+    code: undefined,
+    status: undefined
+  };
 }
 
 export const GetRoleListRequest: MessageFns<GetRoleListRequest> = {
@@ -890,8 +1052,11 @@ export const GetRoleListRequest: MessageFns<GetRoleListRequest> = {
     if (message.name !== undefined) {
       writer.uint32(18).string(message.name);
     }
+    if (message.code !== undefined) {
+      writer.uint32(26).string(message.code);
+    }
     if (message.status !== undefined) {
-      writer.uint32(24).int32(message.status);
+      writer.uint32(32).int32(message.status);
     }
     return writer;
   },
@@ -924,7 +1089,15 @@ export const GetRoleListRequest: MessageFns<GetRoleListRequest> = {
           continue;
         }
         case 3: {
-          if (tag !== 24) {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.code = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
             break;
           }
 
@@ -944,6 +1117,7 @@ export const GetRoleListRequest: MessageFns<GetRoleListRequest> = {
     return {
       page: isSet(object.page) ? PageInfo.fromJSON(object.page) : undefined,
       name: isSet(object.name) ? globalThis.String(object.name) : undefined,
+      code: isSet(object.code) ? globalThis.String(object.code) : undefined,
       status: isSet(object.status)
         ? roleStatusFromJSON(object.status)
         : undefined
@@ -957,6 +1131,9 @@ export const GetRoleListRequest: MessageFns<GetRoleListRequest> = {
     }
     if (message.name !== undefined) {
       obj.name = message.name;
+    }
+    if (message.code !== undefined) {
+      obj.code = message.code;
     }
     if (message.status !== undefined) {
       obj.status = roleStatusToJSON(message.status);
@@ -978,6 +1155,7 @@ export const GetRoleListRequest: MessageFns<GetRoleListRequest> = {
         ? PageInfo.fromPartial(object.page)
         : undefined;
     message.name = object.name ?? undefined;
+    message.code = object.code ?? undefined;
     message.status = object.status ?? undefined;
     return message;
   }
@@ -1203,7 +1381,7 @@ export const UpdateRolesResponse: MessageFns<UpdateRolesResponse> = {
 };
 
 function createBaseDeleteRolesRequest(): DeleteRolesRequest {
-  return { names: [] };
+  return { codes: [] };
 }
 
 export const DeleteRolesRequest: MessageFns<DeleteRolesRequest> = {
@@ -1211,7 +1389,7 @@ export const DeleteRolesRequest: MessageFns<DeleteRolesRequest> = {
     message: DeleteRolesRequest,
     writer: BinaryWriter = new BinaryWriter()
   ): BinaryWriter {
-    for (const v of message.names) {
+    for (const v of message.codes) {
       writer.uint32(10).string(v!);
     }
     return writer;
@@ -1233,7 +1411,7 @@ export const DeleteRolesRequest: MessageFns<DeleteRolesRequest> = {
             break;
           }
 
-          message.names.push(reader.string());
+          message.codes.push(reader.string());
           continue;
         }
       }
@@ -1247,16 +1425,16 @@ export const DeleteRolesRequest: MessageFns<DeleteRolesRequest> = {
 
   fromJSON(object: any): DeleteRolesRequest {
     return {
-      names: globalThis.Array.isArray(object?.names)
-        ? object.names.map((e: any) => globalThis.String(e))
+      codes: globalThis.Array.isArray(object?.codes)
+        ? object.codes.map((e: any) => globalThis.String(e))
         : []
     };
   },
 
   toJSON(message: DeleteRolesRequest): unknown {
     const obj: any = {};
-    if (message.names?.length) {
-      obj.names = message.names;
+    if (message.codes?.length) {
+      obj.codes = message.codes;
     }
     return obj;
   },
@@ -1270,7 +1448,7 @@ export const DeleteRolesRequest: MessageFns<DeleteRolesRequest> = {
     object: I
   ): DeleteRolesRequest {
     const message = createBaseDeleteRolesRequest();
-    message.names = object.names?.map(e => e) || [];
+    message.codes = object.codes?.map(e => e) || [];
     return message;
   }
 };
@@ -1471,7 +1649,7 @@ export const GetApiInfoListResponse_ApiTypeMapEntry: MessageFns<GetApiInfoListRe
   };
 
 function createBaseRoleGetPolicyRequest(): RoleGetPolicyRequest {
-  return { roleName: "" };
+  return { roleCode: "" };
 }
 
 export const RoleGetPolicyRequest: MessageFns<RoleGetPolicyRequest> = {
@@ -1479,8 +1657,8 @@ export const RoleGetPolicyRequest: MessageFns<RoleGetPolicyRequest> = {
     message: RoleGetPolicyRequest,
     writer: BinaryWriter = new BinaryWriter()
   ): BinaryWriter {
-    if (message.roleName !== "") {
-      writer.uint32(10).string(message.roleName);
+    if (message.roleCode !== "") {
+      writer.uint32(10).string(message.roleCode);
     }
     return writer;
   },
@@ -1501,7 +1679,7 @@ export const RoleGetPolicyRequest: MessageFns<RoleGetPolicyRequest> = {
             break;
           }
 
-          message.roleName = reader.string();
+          message.roleCode = reader.string();
           continue;
         }
       }
@@ -1515,16 +1693,16 @@ export const RoleGetPolicyRequest: MessageFns<RoleGetPolicyRequest> = {
 
   fromJSON(object: any): RoleGetPolicyRequest {
     return {
-      roleName: isSet(object.role_name)
-        ? globalThis.String(object.role_name)
+      roleCode: isSet(object.role_code)
+        ? globalThis.String(object.role_code)
         : ""
     };
   },
 
   toJSON(message: RoleGetPolicyRequest): unknown {
     const obj: any = {};
-    if (message.roleName !== "") {
-      obj.role_name = message.roleName;
+    if (message.roleCode !== "") {
+      obj.role_code = message.roleCode;
     }
     return obj;
   },
@@ -1538,13 +1716,13 @@ export const RoleGetPolicyRequest: MessageFns<RoleGetPolicyRequest> = {
     object: I
   ): RoleGetPolicyRequest {
     const message = createBaseRoleGetPolicyRequest();
-    message.roleName = object.roleName ?? "";
+    message.roleCode = object.roleCode ?? "";
     return message;
   }
 };
 
 function createBaseRoleGetPolicyResponse(): RoleGetPolicyResponse {
-  return { roleName: "", apiInfo: [] };
+  return { roleCode: "", apiInfo: [] };
 }
 
 export const RoleGetPolicyResponse: MessageFns<RoleGetPolicyResponse> = {
@@ -1552,8 +1730,8 @@ export const RoleGetPolicyResponse: MessageFns<RoleGetPolicyResponse> = {
     message: RoleGetPolicyResponse,
     writer: BinaryWriter = new BinaryWriter()
   ): BinaryWriter {
-    if (message.roleName !== "") {
-      writer.uint32(10).string(message.roleName);
+    if (message.roleCode !== "") {
+      writer.uint32(10).string(message.roleCode);
     }
     for (const v of message.apiInfo) {
       ApiInfo.encode(v!, writer.uint32(18).fork()).join();
@@ -1577,7 +1755,7 @@ export const RoleGetPolicyResponse: MessageFns<RoleGetPolicyResponse> = {
             break;
           }
 
-          message.roleName = reader.string();
+          message.roleCode = reader.string();
           continue;
         }
         case 2: {
@@ -1599,8 +1777,8 @@ export const RoleGetPolicyResponse: MessageFns<RoleGetPolicyResponse> = {
 
   fromJSON(object: any): RoleGetPolicyResponse {
     return {
-      roleName: isSet(object.role_name)
-        ? globalThis.String(object.role_name)
+      roleCode: isSet(object.role_code)
+        ? globalThis.String(object.role_code)
         : "",
       apiInfo: globalThis.Array.isArray(object?.api_info)
         ? object.api_info.map((e: any) => ApiInfo.fromJSON(e))
@@ -1610,8 +1788,8 @@ export const RoleGetPolicyResponse: MessageFns<RoleGetPolicyResponse> = {
 
   toJSON(message: RoleGetPolicyResponse): unknown {
     const obj: any = {};
-    if (message.roleName !== "") {
-      obj.role_name = message.roleName;
+    if (message.roleCode !== "") {
+      obj.role_code = message.roleCode;
     }
     if (message.apiInfo?.length) {
       obj.api_info = message.apiInfo.map(e => ApiInfo.toJSON(e));
@@ -1628,14 +1806,14 @@ export const RoleGetPolicyResponse: MessageFns<RoleGetPolicyResponse> = {
     object: I
   ): RoleGetPolicyResponse {
     const message = createBaseRoleGetPolicyResponse();
-    message.roleName = object.roleName ?? "";
+    message.roleCode = object.roleCode ?? "";
     message.apiInfo = object.apiInfo?.map(e => ApiInfo.fromPartial(e)) || [];
     return message;
   }
 };
 
 function createBaseRoleUpdatePolicyRequest(): RoleUpdatePolicyRequest {
-  return { roleName: "", apiName: [] };
+  return { roleCode: "", apiName: [] };
 }
 
 export const RoleUpdatePolicyRequest: MessageFns<RoleUpdatePolicyRequest> = {
@@ -1643,8 +1821,8 @@ export const RoleUpdatePolicyRequest: MessageFns<RoleUpdatePolicyRequest> = {
     message: RoleUpdatePolicyRequest,
     writer: BinaryWriter = new BinaryWriter()
   ): BinaryWriter {
-    if (message.roleName !== "") {
-      writer.uint32(10).string(message.roleName);
+    if (message.roleCode !== "") {
+      writer.uint32(10).string(message.roleCode);
     }
     for (const v of message.apiName) {
       writer.uint32(18).string(v!);
@@ -1668,7 +1846,7 @@ export const RoleUpdatePolicyRequest: MessageFns<RoleUpdatePolicyRequest> = {
             break;
           }
 
-          message.roleName = reader.string();
+          message.roleCode = reader.string();
           continue;
         }
         case 2: {
@@ -1690,8 +1868,8 @@ export const RoleUpdatePolicyRequest: MessageFns<RoleUpdatePolicyRequest> = {
 
   fromJSON(object: any): RoleUpdatePolicyRequest {
     return {
-      roleName: isSet(object.role_name)
-        ? globalThis.String(object.role_name)
+      roleCode: isSet(object.role_code)
+        ? globalThis.String(object.role_code)
         : "",
       apiName: globalThis.Array.isArray(object?.api_name)
         ? object.api_name.map((e: any) => globalThis.String(e))
@@ -1701,8 +1879,8 @@ export const RoleUpdatePolicyRequest: MessageFns<RoleUpdatePolicyRequest> = {
 
   toJSON(message: RoleUpdatePolicyRequest): unknown {
     const obj: any = {};
-    if (message.roleName !== "") {
-      obj.role_name = message.roleName;
+    if (message.roleCode !== "") {
+      obj.role_code = message.roleCode;
     }
     if (message.apiName?.length) {
       obj.api_name = message.apiName;
@@ -1719,7 +1897,7 @@ export const RoleUpdatePolicyRequest: MessageFns<RoleUpdatePolicyRequest> = {
     object: I
   ): RoleUpdatePolicyRequest {
     const message = createBaseRoleUpdatePolicyRequest();
-    message.roleName = object.roleName ?? "";
+    message.roleCode = object.roleCode ?? "";
     message.apiName = object.apiName?.map(e => e) || [];
     return message;
   }
@@ -1732,6 +1910,7 @@ export interface Admin {
   DeleteUsers(request: DeleteUsersRequest): Promise<Empty>;
   GetUserCount(request: Empty): Promise<IntValue>;
   GetRoleList(request: GetRoleListRequest): Promise<GetRoleListResponse>;
+  CreateRole(request: CreateRoleRequest): Promise<CreateRoleResponse>;
   UpdateRoles(request: UpdateRolesRequest): Promise<UpdateRolesResponse>;
   DeleteRoles(request: DeleteRolesRequest): Promise<Empty>;
   GetRoleCount(request: Empty): Promise<IntValue>;
@@ -1756,6 +1935,7 @@ export class AdminClientImpl implements Admin {
     this.DeleteUsers = this.DeleteUsers.bind(this);
     this.GetUserCount = this.GetUserCount.bind(this);
     this.GetRoleList = this.GetRoleList.bind(this);
+    this.CreateRole = this.CreateRole.bind(this);
     this.UpdateRoles = this.UpdateRoles.bind(this);
     this.DeleteRoles = this.DeleteRoles.bind(this);
     this.GetRoleCount = this.GetRoleCount.bind(this);
@@ -1805,6 +1985,14 @@ export class AdminClientImpl implements Admin {
     const promise = this.rpc.request(this.service, "GetRoleList", data);
     return promise.then(data =>
       GetRoleListResponse.decode(new BinaryReader(data))
+    );
+  }
+
+  CreateRole(request: CreateRoleRequest): Promise<CreateRoleResponse> {
+    const data = CreateRoleRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "CreateRole", data);
+    return promise.then(data =>
+      CreateRoleResponse.decode(new BinaryReader(data))
     );
   }
 
