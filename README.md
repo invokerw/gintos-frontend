@@ -10,8 +10,8 @@ pnpm run dev
 
 ```bash
 pnpm build
-mkdir -p ../gintos/demo/assets/front/dist
-mv dist/* ../gintos/demo/assets/front/dist
+mkdir -p ../gintos/demo/assets/frontend/dist
+mv dist/* ../gintos/demo/assets/frontend/dist
 ```
 
 ## TODO
